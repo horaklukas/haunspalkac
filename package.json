@@ -1,0 +1,23 @@
+{
+  "name": "haunspalkac",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Lukas Horak <horaklukas@centrum.cz>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/cheerio": "^0.22.30",
+    "axios": "^0.21.4",
+    "cheerio": "^1.0.0-rc.10",
+    "date-fns": "^2.24.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.2",
+    "ts-node": "^10.2.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3"
+  },
+  "scripts": {
+    "scrap": "ts-node ./src/index.ts"
+  }
+}
