@@ -1,8 +1,6 @@
-// @ts-ignore
-const cheerio = require("cheerio");
-// @ts-ignore
-const { getText, psmf } = require("./utils");
-
+import cheerio from "cheerio";
+import { getText, psmf } from "./utils";
+import { trim } from "lodash";
 
 interface Field {
   abbr: string;
@@ -19,7 +17,7 @@ const parseFieldData = (firstColumnText: string): { abbr: string }[] => {
   } else {
     const fieldNumbers = crumbs
       .map((crumb: string) => {
-        const maybeNumber = trim(crumb, [",", " "]);
+        const maybeNumber = trim(crumb, ", ");
         return maybeNumber === "" ? NaN : Number(maybeNumber);
       })
       .filter((maybeFieldNumber: number) => !isNaN(maybeFieldNumber));
@@ -34,8 +32,7 @@ const parseFieldData = (firstColumnText: string): { abbr: string }[] => {
   }
 };
 
-// @ts-ignore
-const getFieldsList = async (): Promise<Field[]> => {
+export const getFieldsList = async (): Promise<Field[]> => {
   const response = await psmf.get("vyveska/seznam-hrist/");
 
   const html = response.data;
@@ -43,7 +40,7 @@ const getFieldsList = async (): Promise<Field[]> => {
 
   const allFields: Field[] = [];
 
-  $(".main-content table tr").each((_: number, row: HTMLTableRowElement) => {
+  $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
     const firstColumnText = getText(columns[0], $);
 
@@ -70,5 +67,3 @@ const getFieldsList = async (): Promise<Field[]> => {
 
   return allFields;
 };
-
-exports.getFieldsList = getFieldsList;

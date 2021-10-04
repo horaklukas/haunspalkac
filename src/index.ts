@@ -1,14 +1,10 @@
-// @ts-ignore
-const axios = require("axios");
-const cheerio = require("cheerio");
-const dateFns = require("date-fns");
-const { cs } = require("date-fns/locale");
-const { trim } = require("lodash");
+import axios from "axios";
+import cheerio from "cheerio";
+import * as dateFns from "date-fns";
+import { cs } from "date-fns/locale";
 
-// @ts-ignore
-const { psmf, getText } = require("./utils");
-// @ts-ignore
-const { getFieldsList } = require("./fields");
+import { psmf, getText } from "./utils";
+import { getFieldsList } from "./fields";
 
 const getMatchesPagePath = async (teamName: string) => {
   const response = await psmf.get("/vyhledavani", {
@@ -21,7 +17,7 @@ const getMatchesPagePath = async (teamName: string) => {
   const $ = cheerio.load(html);
 
   const teamTitle = $(`h2`).filter(
-    (_: number, title: HTMLElement) =>
+    (_: number, title: cheerio.Element) =>
       $(title).text().trim() === `Tým ${teamName}`
   );
 
@@ -30,9 +26,9 @@ const getMatchesPagePath = async (teamName: string) => {
   }
 
   const link = $(".main-content a").filter(
-    (_: number, link: HTMLAnchorElement) => {
+    (_: number, link: cheerio.Element) => {
       const href = $(link).attr("href");
-      return href.includes("hanspaulska-liga");
+      return href !== undefined && href.includes("hanspaulska-liga");
     }
   );
 
@@ -55,7 +51,7 @@ const getTeamMatches = async (teamPagePath: string) => {
     field: string;
   }[] = [];
 
-  $(".main-content table tr").each((_: number, row: HTMLTableRowElement) => {
+  $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
 
     if (columns.length === 0) {

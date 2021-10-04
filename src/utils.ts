@@ -1,13 +1,8 @@
-// @ts-ignore
-const axios = require("axios");
-// @ts-ignore
-const psmf = axios.create({
+import axios from "axios";
+import cheerio from "cheerio";
+
+export const psmf = axios.create({
   baseURL: "http://www.psmf.cz",
 });
 
-exports.psmf = psmf;
-
-// @ts-ignore
-const getText = (element: HTMLElement, $: any) => $(element).text().trim();
-
-exports.getText = getText;
+export const getText = (element: cheerio.Element, $: any) => $(element).text().trim();
