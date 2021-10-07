@@ -12,7 +12,7 @@ import {
 } from "./fields.fixtures";
 
 jest.mock("../utils", () => ({
-  ...(jest.requireActual("../utils") as object),
+  ...(jest.requireActual("../utils") as any),
   psmf: {
     get: jest.fn(),
   },

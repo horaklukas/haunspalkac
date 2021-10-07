@@ -4,7 +4,7 @@ import { getMatchesPagePath, getTeamMatches } from "../matches";
 import { crossroadPage, teamPage, matchesPage } from "./matches.fixtures";
 
 jest.mock("../utils", () => ({
-  ...(jest.requireActual("../utils") as object),
+  ...(jest.requireActual("../utils") as any),
   psmf: {
     get: jest.fn(),
   },

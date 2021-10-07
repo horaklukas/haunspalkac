@@ -62,7 +62,9 @@ export const getFieldsList = async (): Promise<FieldData[]> => {
           info,
         });
       });
-    } catch (e) {}
+    } catch (e) {
+      // TODO - handle errors
+    }
   });
 
   return allFields;

@@ -1,6 +1,8 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 
-type Props = PropsWithChildren<{}>;
+interface Props {
+  children: ReactNode;
+}
 
 const Layout = ({ children }: Props) => {
   return <main>{children}</main>;
