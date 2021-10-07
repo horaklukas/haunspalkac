@@ -3,7 +3,7 @@ import { psmf } from "./utils";
 
 type TeamSearchData = string;
 
-interface TeamFormData {
+export interface TeamFormData {
   id: string;
   label: string;
 }
