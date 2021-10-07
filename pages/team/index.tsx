@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { intlFormat } from "date-fns";
 import useSWR from "swr";
+import { Header } from "semantic-ui-react";
 
 import { getFieldsList } from "../../lib/scrapper";
 import type { Field, MatchSchedule } from "../../lib/scrapper";
@@ -47,36 +48,34 @@ const Team = ({ fields }: Props) => {
   const { team, schedule } = useSchedule(teamId);
 
   return (
-    <div className="container">
+    <>
       <Head>
         <title>Team {team}</title>
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
-      <main>
-        <h1 className="title">Team {team}</h1>
+      <Header as="h1">Team</Header>
 
-        {schedule?.length > 0 &&
-          schedule.map((match) => (
-            <div>
-              {intlFormat(
-                new Date(match.date),
-                {
-                  weekday: "long",
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                },
-                {
-                  locale: "cs-CZ",
-                }
-              )}{" "}
-              hraje {match.teams.home} vs. {match.teams.away} na hřišti
-              {fields[match.field]?.name}
-            </div>
-          ))}
-      </main>
-    </div>
+      {schedule?.length > 0 &&
+        schedule.map((match) => (
+          <div>
+            {intlFormat(
+              new Date(match.date),
+              {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              },
+              {
+                locale: "cs-CZ",
+              }
+            )}{" "}
+            hraje {match.teams.home} vs. {match.teams.away} na hřišti
+            {fields[match.field]?.name}
+          </div>
+        ))}
+    </>
   );
 };
 
