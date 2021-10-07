@@ -2,7 +2,7 @@ import cheerio from "cheerio";
 import { getText, psmf } from "./utils";
 import { trim } from "lodash";
 
-export interface Field {
+export interface FieldData {
   abbr: string;
   name: string;
   info: string;
@@ -32,13 +32,13 @@ const parseFieldData = (firstColumnText: string): { abbr: string }[] => {
   }
 };
 
-export const getFieldsList = async (): Promise<Field[]> => {
+export const getFieldsList = async (): Promise<FieldData[]> => {
   const response = await psmf.get("vyveska/seznam-hrist/");
 
   const html = response.data;
   const $ = cheerio.load(html);
 
-  const allFields: Field[] = [];
+  const allFields: FieldData[] = [];
 
   $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");

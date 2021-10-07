@@ -4,13 +4,13 @@ import { cs } from "date-fns/locale";
 
 import { psmf, getText } from "./utils";
 
-export interface Match {
+export interface MatchData {
   teams: { home: string; away: string };
   date: string;
   field: string;
 }
 
-export type MatchSchedule = Match[];
+export type MatchSchedule = MatchData[];
 
 export const getMatchesPagePath = async (teamName: string) => {
   const response = await psmf.get("vyhledavani", {
