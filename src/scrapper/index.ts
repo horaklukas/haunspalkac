@@ -1,3 +1,3 @@
-export { getFieldsList } from "./fields";
-export { getMatchesPagePath, getTeamMatches } from "./matches";
-export { getTeams } from "./teams";
+export * from "./fields";
+export * from "./matches";
+export * from "./teams";

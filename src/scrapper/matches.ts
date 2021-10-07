@@ -10,6 +10,8 @@ export interface Match {
   field: string;
 }
 
+export type MatchSchedule = Match[];
+
 export const getMatchesPagePath = async (teamName: string) => {
   const response = await psmf.get("vyhledavani", {
     params: {
@@ -65,7 +67,9 @@ const getMatchDate = (timeColumn, dateColumn, $) => {
   );
 };
 
-export const getTeamMatches = async (teamPagePath: string) => {
+export const getTeamMatches = async (
+  teamPagePath: string
+): Promise<MatchSchedule> => {
   const response = await psmf.get(`${teamPagePath}rozpis-zapasu`);
 
   const html = response.data;

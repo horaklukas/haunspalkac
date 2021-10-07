@@ -2,7 +2,7 @@ import cheerio from "cheerio";
 import { getText, psmf } from "./utils";
 import { trim } from "lodash";
 
-interface Field {
+export interface Field {
   abbr: string;
   name: string;
   info: string;

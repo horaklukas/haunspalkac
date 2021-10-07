@@ -20,7 +20,7 @@ function parseData<Item extends any>(
   return sortedData;
 }
 
-export const getTeams =  async (): Promise<TeamFormData[]> => {
+export const getTeams = async (): Promise<TeamFormData[]> => {
   const response = await psmf.get("res/js/search.js");
 
   // Note: Script contains `searchJsonData` and `formJsonData` variables.
@@ -31,4 +31,12 @@ export const getTeams =  async (): Promise<TeamFormData[]> => {
   // TODO - cache data
 
   return formData;
+};
+
+export const getTeamName = async (teamId: string) => {
+  const teams = await getTeams();
+
+  const team = teams.find(({ id }) => id === teamId);
+
+  return team?.label ?? null;
 };
