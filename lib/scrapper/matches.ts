@@ -75,7 +75,7 @@ export const getTeamMatches = async (
   const html = response.data;
   const $ = cheerio.load(html);
 
-  const matches: Match[] = [];
+  const matches: MatchData[] = [];
 
   $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
