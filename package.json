@@ -21,6 +21,8 @@
     "@types/jest": "^27.0.2",
     "@types/jest-when": "^2.7.3",
     "@types/node": "^16.10.2",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react": "^7.26.1",
@@ -40,8 +42,7 @@
     "type-check": "tsc --pretty --noEmit",
     "format": "prettier --write .",
     "dev": "next dev",
-    "build": "next build",
-    "lint": "next lint"
+    "build": "next build"
   },
   "husky": {
     "hooks": {
@@ -51,7 +52,6 @@
   },
   "lint-staged": {
     "*.@(ts|tsx)": [
-      "yarn lint",
       "yarn format"
     ]
   }
