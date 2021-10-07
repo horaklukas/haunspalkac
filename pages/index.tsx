@@ -26,7 +26,6 @@ const Home = ({ suggestions }: Props) => {
     <>
       <Head>
         <title>Haunspalkáč</title>
-        {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <Header as="h1">Haunspalkáč</Header>

@@ -51,7 +51,6 @@ const Team = ({ fields }: Props) => {
     <>
       <Head>
         <title>Team {team}</title>
-        {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <Header as="h1">Team</Header>
