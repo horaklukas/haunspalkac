@@ -12,7 +12,7 @@ import Match from "../../components/Match";
 
 export function useSchedule(id: string) {
   const { data, error } = useSWR<{ team: string; schedule: MatchSchedule }>(
-    id ? `/api/schedule/${id}` : null,
+    id ? `/api/schedule/${id}?futureOnly` : null,
     fetcher
   );
   const { team, schedule } = data ?? {};

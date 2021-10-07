@@ -1,3 +1,4 @@
+import { isAfter } from "date-fns";
 import { NextApiRequest, NextApiResponse } from "next";
 
 import {
@@ -8,15 +9,20 @@ import {
 import { getOnlyItem } from "../../../lib/utils";
 
 const matches = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { teamId } = req.query;
-
+  const { teamId, futureOnly } = req.query;
   const id = getOnlyItem(teamId);
 
   try {
     const team = await getTeamName(id);
 
     const path = await getMatchesPagePath(team);
-    const schedule = await getTeamMatches(path);
+    const matches = await getTeamMatches(path);
+
+    const nowDate = new Date();
+    const schedule =
+      futureOnly !== undefined
+        ? matches.filter((match) => isAfter(new Date(match.date), nowDate))
+        : matches;
 
     res.status(200).json({
       team,
