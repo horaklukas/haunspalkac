@@ -1,12 +1,27 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { intlFormat } from "date-fns";
+import useSWR from "swr";
 
-import { getFieldsList } from "../../src/scrapper";
-import type { Field } from "../../src/scrapper";
-import type { UnwrapPromise } from "../../src/types";
-import { useSchedule } from "../../src/hooks";
-import { getOnlyItem } from "../../src/utils";
+import { getFieldsList } from "../../lib/scrapper";
+import type { Field, MatchSchedule } from "../../lib/scrapper";
+import type { UnwrapPromise } from "../../lib/types";
+import { getOnlyItem, fetcher } from "../../lib/utils";
+
+export function useSchedule(id: string) {
+  const { data, error } = useSWR<{ team: string; schedule: MatchSchedule }>(
+    id ? `/api/schedule/${id}` : null,
+    fetcher
+  );
+  const { team, schedule } = data ?? {};
+
+  return {
+    team,
+    schedule,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
 
 export async function getStaticProps() {
   const fields = await getFieldsList();

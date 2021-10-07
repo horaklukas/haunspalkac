@@ -1,10 +1,18 @@
 import { when } from "jest-when";
 import { psmf } from "../utils";
 import { getFieldsList } from "../fields";
-import { aritmaField, bechField, edenField, mainHeader, meteField, midHeader, mikuField } from "./fields.fixtures";
+import {
+  aritmaField,
+  bechField,
+  edenField,
+  mainHeader,
+  meteField,
+  midHeader,
+  mikuField,
+} from "./fields.fixtures";
 
 jest.mock("../utils", () => ({
-  ...jest.requireActual("../utils") as object,
+  ...(jest.requireActual("../utils") as object),
   psmf: {
     get: jest.fn(),
   },
@@ -117,10 +125,10 @@ describe("Fields", () => {
     expect(fields).toHaveLength(1);
     expect(fields[0]).toHaveProperty("name", "Běchovice 2");
   });
-  
+
   it("should parse and assign name to multiple field", async () => {
     const html = mikuField;
-    const name = 'Mikulova'
+    const name = "Mikulova";
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
@@ -145,7 +153,10 @@ describe("Fields", () => {
     const fields = await getFieldsList();
 
     expect(fields).toHaveLength(1);
-    expect(fields[0]).toHaveProperty("info", `Na Korunce 580, Praha 9, pronajímatel T.J. Sokol Praha 9 – Běchovice II.\xa0
-V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0generace, osvětlení.\xa0Více na www.sokolbechovice.cz . Obuv: povoleny maximálně\xa0turfy, gumotextilní kopačky a sálová obuv.\xa0V "lisovkách" se hrát nesmí!`);
+    expect(fields[0]).toHaveProperty(
+      "info",
+      `Na Korunce 580, Praha 9, pronajímatel T.J. Sokol Praha 9 – Běchovice II.\xa0
+V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0generace, osvětlení.\xa0Více na www.sokolbechovice.cz . Obuv: povoleny maximálně\xa0turfy, gumotextilní kopačky a sálová obuv.\xa0V "lisovkách" se hrát nesmí!`
+    );
   });
 });

@@ -8,7 +8,7 @@ const banner = `
     </div>
 </div>
 <div class="cl"></div>
-`
+`;
 
 export const crossroadPage = `
 <div class="content">
@@ -26,7 +26,7 @@ export const crossroadPage = `
         <p><a href="/souteze/2021-turnaje-staropramen-letni-turnaj/0-d/tymy/prazska-es/" title="Pražská eS">Pražská eS</a></p>
     </div>	
 </div>
-`
+`;
 
 export const teamPage = `
 <div class="content">
@@ -120,7 +120,7 @@ export const teamPage = `
 		
 	</div>	
 </div>
-`
+`;
 
 export const matchesPage = `
 <div class="content">
@@ -219,4 +219,4 @@ export const matchesPage = `
 		</tbody></table>
 	</div>	
 </div>
-`
+`;

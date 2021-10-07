@@ -4,8 +4,8 @@ import {
   getMatchesPagePath,
   getTeamMatches,
   getTeamName,
-} from "../../../src/scrapper";
-import { getOnlyItem } from "../../../src/utils";
+} from "../../../lib/scrapper";
+import { getOnlyItem } from "../../../lib/utils";
 
 const matches = async (req: NextApiRequest, res: NextApiResponse) => {
   const { teamId } = req.query;

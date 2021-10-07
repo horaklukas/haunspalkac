@@ -46,7 +46,7 @@ export const meteField = `
 <td><a title="METE 1,2 " href="http://mapy.cz/zakladni?x=14.4673609&amp;y=50.1092719&amp;z=15&amp;source=addr&amp;id=11165881&amp;q=U%20Meteoru%2029%2F3%2C" target="_blank">METE 1, 2 </a>(dříve byla zkratka MET8)</td>
 <td><a title="Meteor 8" href="http://mapy.cz/zakladni?x=14.4673609&amp;y=50.1092719&amp;z=15&amp;source=addr&amp;id=11165881&amp;q=U%20Meteoru%2029%2F3%2C" target="_blank">Meteor 8</a><a href="http://mapy.atlas.cz/mapa/MET8" target="_blank"></a></td>
 <td>U Meteoru 29/3, Praha 8, pronajímatel FK Meteor Praha 8.&nbsp;Hraje se&nbsp;na prvním&nbsp;fotbalovém hřišti (UMT) od&nbsp;vchodu do areálu.&nbsp;Šatny a sprchy jsou v budově pod restaurací, tedy až za "hlavním" travnatým hřištěm. &nbsp;Hřiště č. 1 je blíže šatnám (= dál od vchodu do areálu). UMT 3. generace, osvětlení<strong>.</strong> Více na <a href="http://www.fkmeteorpraha.cz">www.fkmeteorpraha.cz</a> . Obuv viz Pravidlo 4, odstavec III. V "lisovkách" se hrát může.&nbsp;&nbsp; &nbsp;<a href="/res/data/028/003445.docx"><img border="0" alt="Meteor8 - UMT_zákazy.docx (dokument MS Word)" align="absMiddle" src="/res/global-utf/file/16/doc.gif" width="16" height="16" style="margin-right: 3px"></a><a href="/res/data/028/003445.docx">Meteor8 - UMT_zákazy.docx</a></td></tr>
-`
+`;
 
 export const mikuField = `
 <tr>

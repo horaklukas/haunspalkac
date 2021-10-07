@@ -1,8 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { getTeams } from "../src/scrapper";
-import type { UnwrapPromise } from "../src/types";
+import { getTeams } from "../lib/scrapper";
+import type { UnwrapPromise } from "../lib/types";
 
 export async function getStaticProps() {
   const suggestions = await getTeams();
@@ -36,7 +36,9 @@ const Home = ({ suggestions }: Props) => {
             <br />
             <select onChange={(e) => setTeamId(e.target.value)}>
               {suggestions.map((team) => (
-                <option key={team.id} value={team.id}>{team.label}</option>
+                <option key={team.id} value={team.id}>
+                  {team.label}
+                </option>
               ))}
             </select>
             <br />
