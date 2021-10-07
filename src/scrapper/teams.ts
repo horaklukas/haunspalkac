@@ -1,6 +1,7 @@
+import { orderBy } from "lodash";
 import { psmf } from "./utils";
 
-type TeamSearchData = any;
+type TeamSearchData = string;
 
 interface TeamFormData {
   id: string;
@@ -13,10 +14,13 @@ function parseData<Item extends any>(
 ): Item[] {
   const dataJson = dataScript.replace(`var ${dataName}JsonData =`, "").trim();
 
-  return JSON.parse(dataJson);
+  const data = JSON.parse(dataJson);
+  const sortedData = orderBy(data, ["label"], "asc");
+
+  return sortedData;
 }
 
-export const getTeamSuggestions = async (): Promise<TeamSearchData[]> => {
+export const getTeamSuggestions = async (): Promise<TeamFormData[]> => {
   const response = await psmf.get("res/js/search.js");
 
   // Note: Script contains `searchJsonData` and `formJsonData` variables.

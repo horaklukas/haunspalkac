@@ -34,7 +34,6 @@
     "typescript": "^4.4.3"
   },
   "scripts": {
-    "scrap": "ts-node ./src/index.ts",
     "start": "next start",
     "test": "jest",
     "type-check": "tsc --pretty --noEmit",
