@@ -4,6 +4,12 @@ import { cs } from "date-fns/locale";
 
 import { psmf, getText } from "./utils";
 
+export interface Match {
+  teams: { home: string; away: string };
+  date: string;
+  field: string;
+}
+
 export const getMatchesPagePath = async (teamName: string) => {
   const response = await psmf.get("vyhledavani", {
     params: {
@@ -37,17 +43,35 @@ export const getMatchesPagePath = async (teamName: string) => {
   throw new Error("Coulnd't get team matches path");
 };
 
+const getMatchDate = (timeColumn, dateColumn, $) => {
+  // TODO parse year from
+  const year = 2021;
+
+  const time = getText(timeColumn, $);
+  const [hour, minute] = time.split(":");
+
+  const day = getText(dateColumn, $);
+
+  const parsedDate: Date = dateFns.parse(day, "EEEEEE d.M.", new Date(), {
+    locale: cs,
+  });
+
+  return new Date(
+    year,
+    parsedDate.getMonth(),
+    parsedDate.getDate(),
+    hour,
+    minute
+  );
+};
+
 export const getTeamMatches = async (teamPagePath: string) => {
   const response = await psmf.get(`${teamPagePath}rozpis-zapasu`);
 
   const html = response.data;
   const $ = cheerio.load(html);
 
-  const matches: {
-    teams: { home: string; away: string };
-    date: Date;
-    field: string;
-  }[] = [];
+  const matches: Match[] = [];
 
   $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
@@ -58,24 +82,7 @@ export const getTeamMatches = async (teamPagePath: string) => {
 
     const [home, away] = $(columns[0]).text().split("–");
 
-    const year = 2021;
-
-    const time = getText(columns[2], $);
-    const [hour, minute] = time.split(":");
-
-    const day = getText(columns[1], $);
-
-    const parsedDate: Date = dateFns.parse(day, "EEEEEE d.M.", new Date(), {
-      locale: cs,
-    });
-
-    const matchDate = new Date(
-      year,
-      parsedDate.getMonth(),
-      parsedDate.getDate(),
-      hour,
-      minute
-    );
+    const matchDate = getMatchDate(columns[2], columns[1], $).toISOString();
 
     matches.push({
       teams: {

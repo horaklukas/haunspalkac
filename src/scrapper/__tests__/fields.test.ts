@@ -4,7 +4,7 @@ import { getFieldsList } from "../fields";
 import { aritmaField, bechField, edenField, mainHeader, meteField, midHeader, mikuField } from "./fields.fixtures";
 
 jest.mock("../utils", () => ({
-  ...jest.requireActual("../utils"),
+  ...jest.requireActual("../utils") as object,
   psmf: {
     get: jest.fn(),
   },

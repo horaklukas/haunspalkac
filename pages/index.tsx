@@ -1,20 +1,24 @@
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { getFieldsList, getMatchesPagePath, getTeamMatches } from "../src/scrapper";
 
-const Home = () => {
-  const [fields, setFields] = useState([]);
-  const [schedule, setSchedule] = useState([]);
+export async function getStaticProps() {
+  // const team = "Viktoria Bítovská A";
+  const team = "Pražská eS";
 
-  useEffect(() => {
-    fetch("/api/matches/schedule")
-      .then((res) => res.json())
-      .then((schedule) => setSchedule(schedule));
+  const path = await getMatchesPagePath(team);
+  const schedule = await getTeamMatches(path);
 
-    fetch("/api/fields")
-      .then((res) => res.json())
-      .then((fields) => setFields(fields));
-  }, []);
+  const fields = await getFieldsList();
 
+  return {
+    props: {
+      fields,
+      schedule,
+    },
+  };
+}
+
+const Home = ({ schedule }) => {
   return (
     <div className="container">
       <Head>
@@ -26,7 +30,7 @@ const Home = () => {
         <h1 className="title">Haunspalkáč</h1>
 
         {/* {fields.length > 0 && <pre>{JSON.stringify(fields, null, 2)}</pre>} */}
-        {schedule.length > 0 && <pre>{JSON.stringify(schedule, null, 2)}</pre>}
+        {schedule?.length > 0 && <pre>{JSON.stringify(schedule, null, 2)}</pre>}
       </main>
     </div>
   );
