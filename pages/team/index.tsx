@@ -3,14 +3,14 @@ import Head from "next/head";
 import useSWR from "swr";
 import { Header, Placeholder, Segment } from "semantic-ui-react";
 
-import { getFieldsList } from "../../lib/scrapper";
-import type { MatchSchedule } from "../../lib/scrapper";
-import type { UnwrapPromise } from "../../lib/types";
-import { getOnlyItem, fetcher } from "../../lib/utils";
+import { getFieldsList } from "lib/scrapper";
+import type { MatchSchedule } from "lib/scrapper";
+import type { UnwrapPromise } from "lib/types";
+import { getOnlyItem, fetcher } from "lib/utils";
 
-import Match from "../../components/Match";
-import { FieldsProvider } from "../../components/FieldsProvider";
-import type { FieldsById } from "../../components/FieldsProvider";
+import Match from "components/Match";
+import { FieldsProvider } from "components/FieldsProvider";
+import type { FieldsById } from "components/FieldsProvider";
 
 export function useSchedule(id: string) {
   const { data, error } = useSWR<{ team: string; schedule: MatchSchedule }>(

@@ -2,9 +2,9 @@ import Head from "next/head";
 
 import { Header, Grid, Segment } from "semantic-ui-react";
 
-import { TeamSelect } from "../components";
-import { getTeams } from "../lib/scrapper";
-import type { UnwrapPromise } from "../lib/types";
+import TeamSelect from "components/TeamSelect";
+import { getTeams } from "lib/scrapper";
+import type { UnwrapPromise } from "lib/types";
 
 export async function getStaticProps() {
   const suggestions = await getTeams();

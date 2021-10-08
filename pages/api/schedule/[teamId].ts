@@ -1,12 +1,8 @@
 import { isAfter } from "date-fns";
 import { NextApiRequest, NextApiResponse } from "next";
 
-import {
-  getMatchesPagePath,
-  getTeamMatches,
-  getTeamName,
-} from "../../../lib/scrapper";
-import { getOnlyItem } from "../../../lib/utils";
+import { getMatchesPagePath, getTeamMatches, getTeamName } from "lib/scrapper";
+import { getOnlyItem } from "lib/utils";
 
 const matches = async (req: NextApiRequest, res: NextApiResponse) => {
   const { teamId, futureOnly } = req.query;

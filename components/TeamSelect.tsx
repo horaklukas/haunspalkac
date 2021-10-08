@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Dropdown, Button, Form } from "semantic-ui-react";
 
-import type { TeamFormData } from "../lib/scrapper";
+import type { TeamFormData } from "lib/scrapper";
 
 interface Props {
   teams: TeamFormData[];

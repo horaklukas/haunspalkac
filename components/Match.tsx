@@ -1,6 +1,6 @@
 import { Grid, Header, GridColumn } from "semantic-ui-react";
 
-import type { MatchData } from "../lib/scrapper";
+import type { MatchData } from "lib/scrapper";
 import MatchDate from "./MatchDate";
 import MatchField from "./MatchField";
 
