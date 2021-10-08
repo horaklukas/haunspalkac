@@ -1,23 +1,25 @@
 import { Label, Icon, Popup } from "semantic-ui-react";
-import type { FieldData } from "../lib/scrapper";
+import { useField } from "./FieldsProvider";
 
 interface Props {
-  field: FieldData | string;
+  fieldId: string;
 }
 
-const MatchField = ({ field }: Props) => {
+const MatchField = ({ fieldId }: Props) => {
+  const fieldData = useField(fieldId);
+
   const label = (
     <Label style={{ alignSelf: "flex-start" }}>
       <Icon name="map marker alternate" />
-      {typeof field === "string" ? field : field.name}
+      {fieldData ? fieldData.name : fieldId}
     </Label>
   );
 
-  if (typeof field === "string") {
+  if (!fieldData) {
     return label;
   }
 
-  return <Popup content={field.info} trigger={label} />;
+  return <Popup content={fieldData.info} trigger={label} />;
 };
 
 export default MatchField;

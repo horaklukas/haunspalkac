@@ -1,15 +1,14 @@
 import { Grid, Header, GridColumn } from "semantic-ui-react";
 
-import type { FieldData, MatchData } from "../lib/scrapper";
+import type { MatchData } from "../lib/scrapper";
 import MatchDate from "./MatchDate";
 import MatchField from "./MatchField";
 
 interface Props {
   match: MatchData;
-  fields: Record<string, FieldData>;
 }
 
-const Match = ({ match, fields }: Props) => {
+const Match = ({ match }: Props) => {
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <MatchDate date={match.date} />
@@ -30,7 +29,7 @@ const Match = ({ match, fields }: Props) => {
         </GridColumn>
       </Grid>
 
-      <MatchField field={fields[match.field] ?? match.field} />
+      <MatchField fieldId={match.field} />
     </div>
   );
 };
