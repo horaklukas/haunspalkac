@@ -1,4 +1,4 @@
 import cheerio from "cheerio";
 
-export const getText = (element: cheerio.Element, $: cheerio.Root) =>
+export const getText = (element: cheerio.Element | string, $: cheerio.Root) =>
   $(element).text().trim();

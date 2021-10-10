@@ -47,10 +47,12 @@ export const getMatchesPagePath = async (teamName: string) => {
   throw new Error("Coulnd't get team matches path");
 };
 
-const getMatchDate = (timeColumn, dateColumn, $) => {
-  // TODO parse year from
-  const year = 2021;
-
+const getMatchDate = (
+  timeColumn: cheerio.Element,
+  dateColumn: cheerio.Element,
+  year: number,
+  $: cheerio.Root
+) => {
   const time = getText(timeColumn, $);
   const [hour, minute] = time.split(":");
 
@@ -77,6 +79,11 @@ export const getTeamMatches = async (
   const html = response.data;
   const $ = cheerio.load(html);
 
+  const titleText = getText("h1", $);
+  const [parsedYear] = titleText.match(/\d{4}/) ?? [];
+  // fallback to current year if there is some issue about parsing the year
+  const year = parsedYear ? Number(parsedYear) : new Date().getFullYear();
+
   const matches: MatchData[] = [];
 
   $(".main-content table tr").each((_: number, row: cheerio.Element) => {
@@ -88,7 +95,12 @@ export const getTeamMatches = async (
 
     const [home, away] = $(columns[0]).text().split("–");
 
-    const matchDate = getMatchDate(columns[2], columns[1], $).toISOString();
+    const matchDate = getMatchDate(
+      columns[2],
+      columns[1],
+      year,
+      $
+    ).toISOString();
 
     matches.push({
       teams: {
