@@ -9,6 +9,7 @@ import {
   meteField,
   midHeader,
   mikuField,
+  motoField,
 } from "./fields.fixtures";
 import type { AxiosResponse } from "axios";
 
@@ -160,5 +161,60 @@ describe("Fields", () => {
       `Na Korunce 580, Praha 9, pronajímatel T.J. Sokol Praha 9 – Běchovice II.\xa0
 V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0generace, osvětlení.\xa0Více na www.sokolbechovice.cz . Obuv: povoleny maximálně\xa0turfy, gumotextilní kopačky a sálová obuv.\xa0V "lisovkách" se hrát nesmí!`
     );
+  });
+
+  it("should parse field link for one field", async () => {
+    const html = aritmaField;
+    const link =
+      "http://mapy.cz/zakladni?x=14.3407596&y=50.0985489&z=15&source=addr&id=8985624";
+
+    when(psmf.get)
+      .calledWith("vyveska/seznam-hrist/")
+      .mockResolvedValue(createResponse(html));
+
+    const fields = await getFieldsList();
+
+    expect(fields).toHaveLength(1);
+    expect(fields[0]).toHaveProperty("link", link);
+  });
+
+  it("should parse field link for multiple fields with one link", async () => {
+    const html = meteField;
+    const link =
+      "http://mapy.cz/zakladni?x=14.4673609&y=50.1092719&z=15&source=addr&id=11165881&q=U%20Meteoru%2029%2F3%2C";
+
+    when(psmf.get)
+      .calledWith("vyveska/seznam-hrist/")
+      .mockResolvedValue(createResponse(html));
+
+    const fields = await getFieldsList();
+
+    expect(fields).toHaveLength(2);
+    expect(fields[0]).toHaveProperty("link", link);
+    expect(fields[1]).toHaveProperty("link", link);
+  });
+
+  it("should parse field link for multiple fields with individual links", async () => {
+    const html = motoField;
+    const link1 =
+      "https://mapy.cz/zakladni?x=14.3611348&y=50.0510808&z=18&base=ophoto&source=coor&id=14.36198204755783%2C50.05139082670212";
+    const link2 =
+      "https://mapy.cz/zakladni?x=14.3614781&y=50.0505917&z=18&base=ophoto&source=coor&id=14.360179603099823%2C50.050770565867424";
+    const link3 =
+      "https://mapy.cz/zakladni?x=14.3614781&y=50.0505917&z=18&base=ophoto&source=coor&id=14.360179603099823%2C50.050770565867424";
+    const link4 =
+      "https://mapy.cz/zakladni?x=14.3614781&y=50.0505917&z=18&base=ophoto&source=coor&id=14.360051164804077%2C50.05026791106221";
+
+    when(psmf.get)
+      .calledWith("vyveska/seznam-hrist/")
+      .mockResolvedValue(createResponse(html));
+
+    const fields = await getFieldsList();
+
+    expect(fields).toHaveLength(4);
+    expect(fields[0]).toHaveProperty("link", link1);
+    expect(fields[1]).toHaveProperty("link", link2);
+    expect(fields[2]).toHaveProperty("link", link3);
+    expect(fields[3]).toHaveProperty("link", link4);
   });
 });

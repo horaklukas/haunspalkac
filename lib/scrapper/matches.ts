@@ -64,8 +64,8 @@ const getMatchDate = (timeColumn, dateColumn, $) => {
     year,
     parsedDate.getMonth(),
     parsedDate.getDate(),
-    hour,
-    minute
+    Number(hour),
+    Number(minute)
   );
 };
 

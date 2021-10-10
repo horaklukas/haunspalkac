@@ -8,14 +8,36 @@ export interface FieldData {
   abbr: string;
   name: string;
   info: string;
+  link: string;
 }
 
-// TODO - get also field link
-const parseFieldData = (firstColumnText: string): { abbr: string }[] => {
+const parseFieldData = (
+  firstColumn: cheerio.Element,
+  $: cheerio.Root
+): Pick<FieldData, "abbr" | "link">[] => {
+  const firstColumnText = getText(firstColumn, $);
+
+  // headers are not in th but td elements, we need to identify them by label :( and then skip them
+  if (firstColumnText === "Zkratka hřiště") {
+    return null;
+  }
+
   const [fieldId, ...crumbs] = firstColumnText.split(/\s/g);
 
+  const links: string[] = [];
+  $(firstColumn)
+    .find("a")
+    .each((_: Number, linkElement: cheerio.Element) => {
+      const link = $(linkElement).attr("href");
+
+      if (/^https?:\/\/mapy\.cz/.test(link)) {
+        links.push(link);
+      }
+    });
+  const firstLink = links[0] ?? null;
+
   if (crumbs.length === 0) {
-    return [{ abbr: fieldId }];
+    return [{ abbr: fieldId, link: firstLink }];
   } else {
     const fieldNumbers = crumbs
       .map((crumb: string) => {
@@ -25,11 +47,16 @@ const parseFieldData = (firstColumnText: string): { abbr: string }[] => {
       .filter((maybeFieldNumber: number) => !isNaN(maybeFieldNumber));
 
     if (fieldNumbers.length === 0) {
-      return [{ abbr: fieldId }];
+      return [{ abbr: fieldId, link: firstLink }];
     } else {
-      return fieldNumbers.map((fieldNumber: number) => ({
-        abbr: `${fieldId}${fieldNumber}`,
-      }));
+      return fieldNumbers.map((fieldNumber: number, index: number) => {
+        const link = links[index] ?? firstLink;
+
+        return {
+          abbr: `${fieldId}${fieldNumber}`,
+          link: link,
+        };
+      });
     }
   }
 };
@@ -44,17 +71,15 @@ export const getFieldsList = async (): Promise<FieldData[]> => {
 
   $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
-    const firstColumnText = getText(columns[0], $);
-
-    // headers are not in th but td elements, we need to identify it by label :( skip headers
-    if (firstColumnText === "Zkratka hřiště") {
-      return;
-    }
 
     try {
-      const fields = parseFieldData(firstColumnText);
+      const fields = parseFieldData(columns[0], $);
 
-      fields.forEach(({ abbr }) => {
+      if (!fields) {
+        return;
+      }
+
+      fields.forEach(({ abbr, link }) => {
         const name = getText(columns[1], $);
         const info = getText(columns[2], $);
 
@@ -62,6 +87,7 @@ export const getFieldsList = async (): Promise<FieldData[]> => {
           abbr,
           name,
           info,
+          link: link,
         });
       });
     } catch (e) {
