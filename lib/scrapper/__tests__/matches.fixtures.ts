@@ -28,6 +28,9 @@ export const crossroadPage = `
 </div>
 `;
 
+export const crossroadTeamPath =
+  "/souteze/2021-hanspaulska-liga-podzim/7-e/tymy/prazska-es/";
+
 export const teamPage = `
 <div class="content">
     ${banner}
@@ -121,6 +124,8 @@ export const teamPage = `
 	</div>	
 </div>
 `;
+
+export const teamPagePath = `/souteze/2021-hanspaulska-liga-podzim/7-f/tymy/viktoria-bitovska-a/`;
 
 export const matchesPage = `
 <div class="content">

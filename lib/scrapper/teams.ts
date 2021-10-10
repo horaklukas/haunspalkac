@@ -1,5 +1,6 @@
 import { orderBy } from "lodash";
-import { psmf } from "./utils";
+import { psmfPaths } from "./config";
+import psmf from "./api";
 
 type TeamSearchData = string;
 
@@ -21,7 +22,7 @@ function parseData<Item extends any>(
 }
 
 export const getTeams = async (): Promise<TeamFormData[]> => {
-  const response = await psmf.get("res/js/search.js");
+  const response = await psmf.get(psmfPaths.teamsScript);
 
   // Note: Script contains `searchJsonData` and `formJsonData` variables.
   const [_, formDataScript] = response.data.split(";");

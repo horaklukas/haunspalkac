@@ -2,7 +2,9 @@ import cheerio from "cheerio";
 import * as dateFns from "date-fns";
 import { cs } from "date-fns/locale";
 
-import { psmf, getText } from "./utils";
+import { getText } from "./utils";
+import psmf from "./api";
+import { psmfPaths } from "./config";
 
 export interface MatchData {
   teams: { home: string; away: string };
@@ -13,7 +15,7 @@ export interface MatchData {
 export type MatchSchedule = MatchData[];
 
 export const getMatchesPagePath = async (teamName: string) => {
-  const response = await psmf.get("vyhledavani", {
+  const response = await psmf.get(psmfPaths.search, {
     params: {
       query: teamName,
     },
@@ -70,7 +72,7 @@ const getMatchDate = (timeColumn, dateColumn, $) => {
 export const getTeamMatches = async (
   teamPagePath: string
 ): Promise<MatchSchedule> => {
-  const response = await psmf.get(`${teamPagePath}rozpis-zapasu`);
+  const response = await psmf.get(psmfPaths.matchSchedule(teamPagePath));
 
   const html = response.data;
   const $ = cheerio.load(html);

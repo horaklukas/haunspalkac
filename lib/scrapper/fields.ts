@@ -1,6 +1,8 @@
 import cheerio from "cheerio";
-import { getText, psmf } from "./utils";
+import { getText } from "./utils";
+import psmf from "./api";
 import { trim } from "lodash";
+import { psmfPaths } from "./config";
 
 export interface FieldData {
   abbr: string;
@@ -33,7 +35,7 @@ const parseFieldData = (firstColumnText: string): { abbr: string }[] => {
 };
 
 export const getFieldsList = async (): Promise<FieldData[]> => {
-  const response = await psmf.get("vyveska/seznam-hrist/");
+  const response = await psmf.get(psmfPaths.fields);
 
   const html = response.data;
   const $ = cheerio.load(html);

@@ -1,5 +1,5 @@
 import { when } from "jest-when";
-import { psmf } from "../utils";
+import psmf from "../api";
 import { getFieldsList } from "../fields";
 import {
   aritmaField,
@@ -10,10 +10,12 @@ import {
   midHeader,
   mikuField,
 } from "./fields.fixtures";
+import type { AxiosResponse } from "axios";
 
-jest.mock("../utils", () => ({
-  ...(jest.requireActual("../utils") as any),
-  psmf: {
+jest.mock("../api", () => ({
+  ...(jest.requireActual("../api") as any),
+  __esModule: true,
+  default: {
     get: jest.fn(),
   },
 }));
@@ -33,7 +35,7 @@ describe("Fields", () => {
         </body>
         </html>
         `,
-    };
+    } as AxiosResponse;
   }
 
   beforeEach(() => {

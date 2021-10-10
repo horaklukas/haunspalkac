@@ -1,11 +1,19 @@
 import { when } from "jest-when";
-import { psmf } from "../utils";
+import psmf from "../api";
 import { getMatchesPagePath, getTeamMatches } from "../matches";
-import { crossroadPage, teamPage, matchesPage } from "./matches.fixtures";
+import {
+  crossroadPage,
+  teamPage,
+  matchesPage,
+  teamPagePath,
+  crossroadTeamPath,
+} from "./matches.fixtures";
+import type { AxiosResponse } from "axios";
 
-jest.mock("../utils", () => ({
-  ...(jest.requireActual("../utils") as any),
-  psmf: {
+jest.mock("../api", () => ({
+  ...(jest.requireActual("../api") as any),
+  __esModule: true,
+  default: {
     get: jest.fn(),
   },
 }));
@@ -26,7 +34,7 @@ describe("Matches", () => {
       request: {
         path,
       },
-    };
+    } as AxiosResponse;
   }
 
   describe("getMatchesPagePath", () => {
@@ -37,7 +45,7 @@ describe("Matches", () => {
     it("should return path when team title found in main content", async () => {
       const html = teamPage;
       const team = `Viktoria Bítovská A`;
-      const expectedPath = `/souteze/2021-hanspaulska-liga-podzim/7-f/tymy/viktoria-bitovska-a`;
+      const expectedPath = teamPagePath;
 
       expect.assertions(1);
 
@@ -51,7 +59,7 @@ describe("Matches", () => {
     it("should find path from link when ambiguous results returned", async () => {
       const html = crossroadPage;
       const team = `Pražská eS`;
-      const expectedPath = `/souteze/2021-hanspaulska-liga-podzim/7-e/tymy/prazska-es/`;
+      const expectedPath = crossroadTeamPath;
 
       expect.assertions(1);
 
@@ -79,9 +87,6 @@ describe("Matches", () => {
   });
 
   describe("getTeamMatches", () => {
-    const teamPagePath =
-      "/souteze/2021-hanspaulska-liga-podzim/7-f/tymy/viktoria-bitovska-a/";
-
     beforeAll(() => {
       when(psmf.get)
         .calledWith(`${teamPagePath}rozpis-zapasu`)
