@@ -27,7 +27,7 @@ const parseFieldData = (
   const links: string[] = [];
   $(firstColumn)
     .find("a")
-    .each((_: Number, linkElement: cheerio.Element) => {
+    .each((_: number, linkElement: cheerio.Element) => {
       const link = $(linkElement).attr("href");
 
       if (/^https?:\/\/mapy\.cz/.test(link)) {
