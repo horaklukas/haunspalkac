@@ -1,4 +1,4 @@
-import { Label, Icon, Popup } from "semantic-ui-react";
+import { Label, Icon, Popup, Button } from "semantic-ui-react";
 import { useField } from "./FieldsProvider";
 
 interface Props {
@@ -19,7 +19,30 @@ const MatchField = ({ fieldId }: Props) => {
     return label;
   }
 
-  return <Popup content={fieldData.info} trigger={label} />;
+  return (
+    <Popup
+      content={
+        <>
+          <p style={{ textAlign: "center" }}>
+            <Button
+              icon
+              labelPosition="right"
+              as="a"
+              href={fieldData.link}
+              target="_blank"
+              color="teal"
+            >
+              Show on map
+              <Icon name="map" />
+            </Button>
+          </p>
+          <p>{fieldData.info}</p>
+        </>
+      }
+      trigger={label}
+      on="click"
+    />
+  );
 };
 
 export default MatchField;
