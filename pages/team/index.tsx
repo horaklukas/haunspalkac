@@ -2,17 +2,16 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import useSWR from "swr";
-import { Placeholder, Segment, Menu, Header } from "semantic-ui-react";
+import { Placeholder, Menu } from "semantic-ui-react";
 
 import { getFieldsList } from "lib/scrapper";
 import type { MatchSchedule } from "lib/scrapper";
 import type { UnwrapPromise } from "lib/types";
 import { getOnlyItem, fetcher } from "lib/utils";
 
-import Match from "components/Match";
-import NextMatch from "components/NextMatch";
 import { FieldsProvider } from "components/FieldsProvider";
 import type { FieldsById } from "components/FieldsProvider";
+import MatchesSchedule from "components/MatchesSchedule";
 
 export function useSchedule(id: string) {
   const { data, error } = useSWR<{ team: string; schedule: MatchSchedule }>(
@@ -28,16 +27,6 @@ export function useSchedule(id: string) {
     isError: error,
   };
 }
-
-const matchPlaceholder = (
-  <Segment>
-    <Placeholder fluid>
-      <Placeholder.Line length="short" />
-      <Placeholder.Line length="long" />
-      <Placeholder.Line length="short" />
-    </Placeholder>
-  </Segment>
-);
 
 export async function getStaticProps() {
   const fields = await getFieldsList();
@@ -87,41 +76,8 @@ const Team = ({ fields }: Props) => {
             </Menu.Menu>
           </Menu>
         )}
-        {isLoading && (
-          <>
-            {matchPlaceholder}
-            {matchPlaceholder}
-            {matchPlaceholder}
-          </>
-        )}
 
-        {schedule?.length > 0 &&
-          schedule.map((match, index) =>
-            index === 0 ? (
-              <>
-                <div
-                  style={{
-                    textAlign: "center",
-                    marginBottom: "0.4em",
-                    fontSize: "1.1em",
-                  }}
-                >
-                  Next match
-                </div>
-                <Segment
-                  key={match.date}
-                  style={{ maxWidth: "900px", margin: "0 auto" }}
-                  padded="very"
-                >
-                  <NextMatch match={match} />
-                </Segment>
-              </>
-            ) : (
-              <Segment>
-                <Match match={match} />
-              </Segment>
-            )
-          )}
+        <MatchesSchedule isLoading={isLoading} schedule={schedule} />
       </section>
     </FieldsProvider>
   );
