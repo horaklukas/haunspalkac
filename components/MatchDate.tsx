@@ -1,5 +1,5 @@
 import { intlFormat } from "date-fns";
-import { Label, Icon } from "semantic-ui-react";
+import { Icon } from "semantic-ui-react";
 
 interface Props {
   date: string;
@@ -7,7 +7,7 @@ interface Props {
 
 const MatchDate = ({ date }: Props) => {
   return (
-    <Label style={{ alignSelf: "flex-start" }}>
+    <>
       <Icon name="calendar alternate outline" />{" "}
       {intlFormat(
         new Date(date),
@@ -21,7 +21,7 @@ const MatchDate = ({ date }: Props) => {
           locale: "cs-CZ",
         }
       )}
-    </Label>
+    </>
   );
 };
 

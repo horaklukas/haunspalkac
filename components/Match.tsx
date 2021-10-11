@@ -1,8 +1,9 @@
-import { Grid, Header, GridColumn } from "semantic-ui-react";
+import { Grid, Header, GridColumn, Label, Popup } from "semantic-ui-react";
 
 import type { MatchData } from "lib/scrapper";
 import MatchDate from "./MatchDate";
-import MatchField from "./MatchField";
+import FieldName from "./FieldName";
+import FieldDetail from "./FieldDetail";
 
 interface Props {
   match: MatchData;
@@ -11,11 +12,13 @@ interface Props {
 const Match = ({ match }: Props) => {
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <MatchDate date={match.date} />
+      <Label style={{ alignSelf: "flex-start" }}>
+        <MatchDate date={match.date} />
+      </Label>
 
-      <Grid style={{ flexGrow: 1 }} padded="vertically">
+      <Grid style={{ flexGrow: 1 }}>
         <GridColumn verticalAlign="middle" textAlign="right" width={7}>
-          <Header as="span" size="huge">
+          <Header as="span" size="medium">
             {match.teams.home}
           </Header>
         </GridColumn>
@@ -23,13 +26,22 @@ const Match = ({ match }: Props) => {
           vs.
         </GridColumn>
         <GridColumn verticalAlign="middle" textAlign="left" width={8}>
-          <Header as="span" size="huge">
+          <Header as="span" size="medium">
             {match.teams.away}
           </Header>
         </GridColumn>
       </Grid>
 
-      <MatchField fieldId={match.field} />
+      <Popup
+        content={<FieldDetail fieldId={match.field} />}
+        trigger={
+          <Label style={{ alignSelf: "flex-start" }}>
+            <FieldName fieldId={match.field} />
+          </Label>
+        }
+        on="click"
+        position="left center"
+      />
     </div>
   );
 };

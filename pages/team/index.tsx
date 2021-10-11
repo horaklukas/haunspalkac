@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import useSWR from "swr";
-import { Placeholder, Segment, Menu, Button } from "semantic-ui-react";
+import { Placeholder, Segment, Menu, Header } from "semantic-ui-react";
 
 import { getFieldsList } from "lib/scrapper";
 import type { MatchSchedule } from "lib/scrapper";
@@ -10,6 +10,7 @@ import type { UnwrapPromise } from "lib/types";
 import { getOnlyItem, fetcher } from "lib/utils";
 
 import Match from "components/Match";
+import NextMatch from "components/NextMatch";
 import { FieldsProvider } from "components/FieldsProvider";
 import type { FieldsById } from "components/FieldsProvider";
 
@@ -95,11 +96,32 @@ const Team = ({ fields }: Props) => {
         )}
 
         {schedule?.length > 0 &&
-          schedule.map((match) => (
-            <Segment key={match.date}>
-              <Match match={match} />
-            </Segment>
-          ))}
+          schedule.map((match, index) =>
+            index === 0 ? (
+              <>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginBottom: "0.4em",
+                    fontSize: "1.1em",
+                  }}
+                >
+                  Next match
+                </div>
+                <Segment
+                  key={match.date}
+                  style={{ maxWidth: "900px", margin: "0 auto" }}
+                  padded="very"
+                >
+                  <NextMatch match={match} />
+                </Segment>
+              </>
+            ) : (
+              <Segment>
+                <Match match={match} />
+              </Segment>
+            )
+          )}
       </section>
     </FieldsProvider>
   );
