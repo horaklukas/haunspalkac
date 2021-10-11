@@ -15,7 +15,7 @@ interface Props {
 const Match = ({ match }: Props) => {
   return (
     <div className={styles.container}>
-      <Label>
+      <Label className={styles.label}>
         <MatchDate date={match.date} />
       </Label>
 
@@ -24,7 +24,7 @@ const Match = ({ match }: Props) => {
       <Popup
         content={<FieldDetail fieldId={match.field} />}
         trigger={
-          <Label>
+          <Label className={styles.label}>
             <FieldName fieldId={match.field} />
           </Label>
         }

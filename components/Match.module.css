@@ -9,6 +9,13 @@
   text-align: center;
 }
 
+.label {
+  display: inline-flex !important;
+  flex-grow: 1;
+  align-items: center;
+  white-space: pre;
+}
+
 @media screen and (min-width: 576px) {
   .label {
     align-self: flex-start;
