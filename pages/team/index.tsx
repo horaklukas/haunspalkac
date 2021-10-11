@@ -1,7 +1,8 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Head from "next/head";
 import useSWR from "swr";
-import { Header, Placeholder, Segment } from "semantic-ui-react";
+import { Placeholder, Segment, Menu, Button } from "semantic-ui-react";
 
 import { getFieldsList } from "lib/scrapper";
 import type { MatchSchedule } from "lib/scrapper";
@@ -67,17 +68,24 @@ const Team = ({ fields }: Props) => {
           <title>Team {team}</title>
         </Head>
 
-        <Header as="h1" textAlign="center">
-          {isLoading ? (
-            <Placeholder style={{ margin: "0 auto" }}>
-              <Placeholder.Header>
-                <Placeholder.Line />
-              </Placeholder.Header>
-            </Placeholder>
-          ) : (
-            team
-          )}
-        </Header>
+        {isLoading ? (
+          <Placeholder>
+            <Placeholder.Header>
+              <Placeholder.Line />
+            </Placeholder.Header>
+          </Placeholder>
+        ) : (
+          <Menu>
+            <Menu.Item header>{team}</Menu.Item>
+            <Menu.Menu position="right">
+              <Menu.Item>
+                <Link href="/" passHref>
+                  Změnit tým
+                </Link>
+              </Menu.Item>
+            </Menu.Menu>
+          </Menu>
+        )}
         {isLoading && (
           <>
             {matchPlaceholder}
