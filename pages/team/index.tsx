@@ -14,16 +14,22 @@ import type { FieldsById } from "components/FieldsProvider";
 import MatchesSchedule from "components/MatchesSchedule";
 
 export function useSchedule(id: string) {
+  const router = useRouter();
   const { data, error } = useSWR<{ team: string; schedule: MatchSchedule }>(
     id ? `/api/schedule/${id}?futureOnly` : null,
     fetcher
   );
   const { team, schedule } = data ?? {};
+  const isLoading = !error && !data;
+
+  if (!team && !isLoading) {
+    router.push("/");
+  }
 
   return {
     team,
     schedule,
-    isLoading: !error && !data,
+    isLoading,
     isError: error,
   };
 }
