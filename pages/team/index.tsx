@@ -1,8 +1,6 @@
 import { useRouter } from "next/router";
-import Link from "next/link";
 import Head from "next/head";
 import useSWR from "swr";
-import { Placeholder, Menu } from "semantic-ui-react";
 
 import { getFieldsList } from "lib/scrapper";
 import type { MatchSchedule } from "lib/scrapper";
@@ -12,6 +10,9 @@ import { getOnlyItem, fetcher } from "lib/utils";
 import { FieldsProvider } from "components/FieldsProvider";
 import type { FieldsById } from "components/FieldsProvider";
 import MatchesSchedule from "components/MatchesSchedule";
+import TeamHeader, {
+  placeholder as teamHeaderPlaceholder,
+} from "components/TeamHeader";
 
 export function useSchedule(id: string) {
   const router = useRouter();
@@ -64,24 +65,7 @@ const Team = ({ fields }: Props) => {
           <title>Team {team}</title>
         </Head>
 
-        {isLoading ? (
-          <Placeholder>
-            <Placeholder.Header>
-              <Placeholder.Line />
-            </Placeholder.Header>
-          </Placeholder>
-        ) : (
-          <Menu>
-            <Menu.Item header>{team}</Menu.Item>
-            <Menu.Menu position="right">
-              <Menu.Item>
-                <Link href="/" passHref>
-                  Změnit tým
-                </Link>
-              </Menu.Item>
-            </Menu.Menu>
-          </Menu>
-        )}
+        {isLoading ? teamHeaderPlaceholder : <TeamHeader team={team} />}
 
         <MatchesSchedule isLoading={isLoading} schedule={schedule} />
       </section>
