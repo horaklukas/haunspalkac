@@ -1,8 +1,9 @@
 import { intlFormat } from "date-fns";
 import { Icon } from "semantic-ui-react";
+import type { MatchData } from "lib/scrapper";
 
 interface Props {
-  date: number;
+  date: MatchData["date"];
 }
 
 const MatchDate = ({ date }: Props) => {

@@ -8,7 +8,7 @@ import { psmfPaths } from "./config";
 
 export interface MatchData {
   teams: { home: string; away: string };
-  date: number;
+  date: string;
   field: string;
 }
 
@@ -58,17 +58,14 @@ const getMatchDate = (
 
   const day = getText(dateColumn, $);
 
-  const parsedDate: Date = dateFns.parse(day, "EEEEEE d.M.", new Date(), {
+  const date: Date = dateFns.parse(day, "EEEEEE d.M.", new Date(), {
     locale: cs,
   });
 
-  return new Date(
-    year,
-    parsedDate.getMonth(),
-    parsedDate.getDate(),
-    Number(hour),
-    Number(minute)
-  );
+  date.setHours(Number(hour));
+  date.setMinutes(Number(minute));
+
+  return date;
 };
 
 export const getTeamMatches = async (
@@ -102,7 +99,7 @@ export const getTeamMatches = async (
         home: home?.trim(),
         away: away?.trim(),
       },
-      date: matchDate.getTime(),
+      date: matchDate.toISOString(),
       field: getText(columns[3], $),
     });
   });
