@@ -84,7 +84,7 @@ export const getTeamMatches = async (
   // fallback to current year if there is some issue about parsing the year
   const year = parsedYear ? Number(parsedYear) : new Date().getFullYear();
 
-  const matches: MatchData[] = [];
+  const matches: (MatchData & { hour: number; minute: number })[] = [];
 
   $(".main-content table tr").each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
@@ -95,19 +95,16 @@ export const getTeamMatches = async (
 
     const [home, away] = $(columns[0]).text().split("–");
 
-    const matchDate = getMatchDate(
-      columns[2],
-      columns[1],
-      year,
-      $
-    ).toISOString();
+    const matchDate = getMatchDate(columns[2], columns[1], year, $);
 
     matches.push({
       teams: {
         home: home?.trim(),
         away: away?.trim(),
       },
-      date: matchDate,
+      date: matchDate.toISOString(),
+      hour: matchDate.getHours(),
+      minute: matchDate.getMinutes(),
       field: getText(columns[3], $),
     });
   });
