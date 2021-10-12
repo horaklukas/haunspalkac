@@ -2,7 +2,7 @@ import { intlFormat } from "date-fns";
 import { Icon } from "semantic-ui-react";
 
 interface Props {
-  date: string;
+  date: number;
 }
 
 const MatchDate = ({ date }: Props) => {
