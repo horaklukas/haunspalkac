@@ -43,14 +43,14 @@ const MatchesSchedule = ({ isLoading, schedule }: Props) => {
       {schedule?.length > 0 &&
         schedule.map((match, index) =>
           index === 0 ? (
-            <>
+            <React.Fragment key={match.date}>
               <div className={styles.nextMatchTitle}>Next match</div>
-              <Segment key={match.date} className={styles.nextMatch}>
+              <Segment className={styles.nextMatch}>
                 <NextMatch match={match} />
               </Segment>
-            </>
+            </React.Fragment>
           ) : (
-            <Segment>
+            <Segment key={match.date}>
               <Match match={match} />
             </Segment>
           )
