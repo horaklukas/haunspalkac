@@ -1,6 +1,7 @@
 import cheerio from "cheerio";
 import * as dateFns from "date-fns";
 import { cs } from "date-fns/locale";
+import { zonedTimeToUtc } from "date-fns-tz";
 
 import { getText } from "./utils";
 import psmf from "./api";
@@ -65,7 +66,7 @@ const getMatchDate = (
   date.setHours(Number(hour));
   date.setMinutes(Number(minute));
 
-  return date;
+  return zonedTimeToUtc(date, "Europe/Prague");
 };
 
 export const getTeamMatches = async (

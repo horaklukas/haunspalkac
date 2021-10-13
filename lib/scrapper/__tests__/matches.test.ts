@@ -155,50 +155,17 @@ describe("Matches", () => {
 
       const matches = await getTeamMatches(teamPagePath);
 
-      expect(matches[0]).toHaveProperty(
-        "date",
-        new Date(2021, 8, 8, 18).toISOString()
-      );
-      expect(matches[1]).toHaveProperty(
-        "date",
-        new Date(2021, 8, 15, 18, 15).toISOString()
-      );
-      expect(matches[2]).toHaveProperty(
-        "date",
-        new Date(2021, 8, 22, 20, 30).toISOString()
-      );
-      expect(matches[3]).toHaveProperty(
-        "date",
-        new Date(2021, 8, 29, 20).toISOString()
-      );
-      expect(matches[4]).toHaveProperty(
-        "date",
-        new Date(2021, 9, 5, 19, 15).toISOString()
-      );
-      expect(matches[5]).toHaveProperty(
-        "date",
-        new Date(2021, 9, 13, 20, 45).toISOString()
-      );
-      expect(matches[6]).toHaveProperty(
-        "date",
-        new Date(2021, 9, 20, 17, 45).toISOString()
-      );
-      expect(matches[7]).toHaveProperty(
-        "date",
-        new Date(2021, 9, 27, 19, 0).toISOString()
-      );
-      expect(matches[8]).toHaveProperty(
-        "date",
-        new Date(2021, 10, 9, 19, 15).toISOString()
-      );
-      expect(matches[9]).toHaveProperty(
-        "date",
-        new Date(2021, 10, 17, 18, 45).toISOString()
-      );
-      expect(matches[10]).toHaveProperty(
-        "date",
-        new Date(2021, 11, 1, 20, 45).toISOString()
-      );
+      expect(matches[0]).toHaveProperty("date", "2021-09-08T16:00:00.000Z");
+      expect(matches[1]).toHaveProperty("date", "2021-09-15T16:15:00.000Z");
+      expect(matches[2]).toHaveProperty("date", "2021-09-22T18:30:00.000Z");
+      expect(matches[3]).toHaveProperty("date", "2021-09-29T18:00:00.000Z");
+      expect(matches[4]).toHaveProperty("date", "2021-10-05T17:15:00.000Z");
+      expect(matches[5]).toHaveProperty("date", "2021-10-13T18:45:00.000Z");
+      expect(matches[6]).toHaveProperty("date", "2021-10-20T15:45:00.000Z");
+      expect(matches[7]).toHaveProperty("date", "2021-10-27T17:00:00.000Z");
+      expect(matches[8]).toHaveProperty("date", "2021-11-09T18:15:00.000Z");
+      expect(matches[9]).toHaveProperty("date", "2021-11-17T17:45:00.000Z");
+      expect(matches[10]).toHaveProperty("date", "2021-12-01T19:45:00.000Z");
     });
 
     it("should parse match field", async () => {
