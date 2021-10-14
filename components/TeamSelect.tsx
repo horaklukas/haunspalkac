@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Dropdown, Button, Form } from "semantic-ui-react";
+import { kebabCase } from "lodash";
 
 import type { TeamFormData } from "lib/scrapper";
 
@@ -13,7 +14,7 @@ const TeamSelect = ({ teams }: Props) => {
     () =>
       teams.map((team) => ({
         key: team.id,
-        value: team.id,
+        value: `${kebabCase(team.label)}-${team.id}`,
         text: team.label,
       })),
     [teams]

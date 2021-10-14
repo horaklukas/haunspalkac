@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { isAfter } from "date-fns";
+import type { GetStaticPaths, GetStaticProps } from "next";
 
 import {
   getFieldsList,
@@ -9,6 +11,7 @@ import {
 } from "lib/scrapper";
 import type { MatchSchedule } from "lib/scrapper";
 import { getOnlyItem } from "lib/utils";
+import { MINUTE } from "lib/constants";
 
 import { FieldsProvider } from "components/FieldsProvider";
 import type { FieldsById } from "components/FieldsProvider";
@@ -16,16 +19,12 @@ import MatchesSchedule from "components/MatchesSchedule";
 import TeamHeader, {
   placeholder as teamHeaderPlaceholder,
 } from "components/TeamHeader";
-import { isAfter } from "date-fns";
-import { GetStaticPaths, GetStaticProps } from "next";
 
 interface Props {
   fields: FieldsById;
   team: string;
   schedule: MatchSchedule;
 }
-
-const MINUTE = 60;
 
 const getTeamData = async (teamId: string) => {
   const team = await getTeamName(teamId);
@@ -57,10 +56,11 @@ const getFieldsData = async () => {
 
 export const getStaticProps: GetStaticProps<Props> = async (req) => {
   const teamId = getOnlyItem(req.params.teamId);
+  const [id] = teamId.match(/(\d)*$/) ?? [];
 
   const [fields, teamData] = await Promise.all([
     getFieldsData(),
-    getTeamData(teamId),
+    getTeamData(id),
   ]);
   const { team, schedule } = teamData;
 
