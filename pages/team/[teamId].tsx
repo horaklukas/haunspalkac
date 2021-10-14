@@ -70,7 +70,7 @@ export const getStaticProps: GetStaticProps<Props> = async (req) => {
       team,
       schedule,
     },
-    revalidate: MINUTE * 60,
+    revalidate: 60 * MINUTE,
   };
 };
 
