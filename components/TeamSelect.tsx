@@ -37,7 +37,7 @@ const TeamSelect = ({ teams }: Props) => {
       </Form.Field>
 
       {
-        <Link href={{ pathname: `/team`, query: { id: teamId } }} passHref>
+        <Link href={`/team/${teamId}`} passHref>
           <Button as="a" disabled={!teamId}>
             Select team
           </Button>
