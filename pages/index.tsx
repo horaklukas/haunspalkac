@@ -2,9 +2,11 @@ import Head from "next/head";
 
 import { Header, Grid, Segment } from "semantic-ui-react";
 
-import TeamSelect from "components/TeamSelect";
 import { getTeams } from "lib/scrapper";
 import type { UnwrapPromise } from "lib/types";
+import { MINUTE } from "lib/constants";
+
+import TeamSelect from "components/TeamSelect";
 
 export async function getStaticProps() {
   const suggestions = await getTeams();
@@ -13,6 +15,8 @@ export async function getStaticProps() {
     props: {
       suggestions,
     },
+    // revalidat list of teams (which is pretty static) once per week is enough
+    revalidate: 7 * 24 * 60 * MINUTE,
   };
 }
 
