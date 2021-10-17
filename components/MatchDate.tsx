@@ -1,6 +1,7 @@
 import { intlFormat } from "date-fns";
 import { Icon } from "semantic-ui-react";
 import type { MatchData } from "lib/scrapper";
+import { useTranslation } from "next-i18next";
 
 interface Props {
   date: MatchData["date"];
@@ -8,6 +9,8 @@ interface Props {
 
 const MatchDate = ({ date }: Props) => {
   const refDate = new Date(date);
+  const { i18n } = useTranslation("team-detail");
+
   return (
     <>
       <Icon
@@ -25,7 +28,7 @@ const MatchDate = ({ date }: Props) => {
               day: "numeric",
             },
             {
-              locale: "cs-CZ",
+              locale: i18n.language,
             }
           )}
         </span>
@@ -36,7 +39,7 @@ const MatchDate = ({ date }: Props) => {
             minute: "numeric",
           },
           {
-            locale: "cs-CZ",
+            locale: i18n.language,
           }
         )}
       </span>
