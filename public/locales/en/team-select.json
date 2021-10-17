@@ -1,3 +1,7 @@
 {
-    
+  "choose-team": "Choose your team",
+  "loader-restoring": "Loading data...",
+  "loader-redirecting": "Redirecting to team...",
+  "no-teams": "Sorry, no data",
+  "select-team": "Select team"
 }

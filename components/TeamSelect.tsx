@@ -3,6 +3,7 @@ import { useMemo, useState, useEffect } from "react";
 import { Dropdown, Button, Form, Dimmer, Loader } from "semantic-ui-react";
 import { useRouter } from "next/router";
 import { kebabCase } from "lodash";
+import { useTranslation } from "next-i18next";
 
 import type { TeamFormData } from "lib/scrapper";
 import { useStorage } from "lib/hooks";
@@ -52,21 +53,21 @@ const TeamSelect = ({ teams }: Props) => {
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const options = useMemo(() => teams.map(createTeamOption), [teams]);
   const [loaderState, storeTeamId] = useStoredTeam();
+  const { t } = useTranslation("team-select");
 
   if (teams.length === 0) {
-    <>Sorry no data</>;
+    <>{t("no-teams")}</>;
   }
 
   return (
     <Form>
       <Loader active={loaderState !== LoaderState.HIDDEN}>
-        {loaderState === LoaderState.RESTORING && <>Loading data...</>}
-        {loaderState === LoaderState.REDIRECTING && <>Redirecting to team...</>}
+        {t(`loader-${loaderState}`)}
       </Loader>
 
       <Form.Field>
         <Dropdown
-          placeholder="Choose your team"
+          placeholder={t("choose-team")}
           search
           deburr
           selection
@@ -82,7 +83,7 @@ const TeamSelect = ({ teams }: Props) => {
             disabled={!selectedTeamId}
             onClick={() => storeTeamId(selectedTeamId)}
           >
-            Select team
+            {t("select-team")}
           </Button>
         </Link>
       }
