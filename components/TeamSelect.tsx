@@ -56,7 +56,7 @@ const TeamSelect = ({ teams }: Props) => {
   if (teams.length === 0) {
     <>Sorry no data</>;
   }
-  console.log({ loaderState });
+
   return (
     <Form>
       <Loader active={loaderState !== LoaderState.HIDDEN}>
