@@ -55,10 +55,6 @@ const TeamSelect = ({ teams }: Props) => {
   const [loaderState, storeTeamId] = useStoredTeam();
   const { t } = useTranslation("team-select");
 
-  if (teams.length === 0) {
-    <>{t("no-teams")}</>;
-  }
-
   return (
     <Form>
       <Loader active={loaderState !== LoaderState.HIDDEN}>
