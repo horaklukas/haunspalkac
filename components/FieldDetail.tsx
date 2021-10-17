@@ -1,11 +1,13 @@
-import { Label, Icon, Popup, Button } from "semantic-ui-react";
+import { Icon, Button } from "semantic-ui-react";
 import { useField } from "./FieldsProvider";
+import { useTranslation } from "next-i18next";
 
 interface Props {
   fieldId: string;
 }
 
 const FieldDetail = ({ fieldId }: Props) => {
+  const { t } = useTranslation("team-detail");
   const fieldData = useField(fieldId);
 
   if (!fieldData) {
@@ -24,7 +26,7 @@ const FieldDetail = ({ fieldId }: Props) => {
           color="teal"
           basic
         >
-          Show on map
+          {t("show-field-on-map")}
           <Icon name="map" style={{ background: "transparent" }} />
         </Button>
       </p>
