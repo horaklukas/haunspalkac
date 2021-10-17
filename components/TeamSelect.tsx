@@ -68,6 +68,7 @@ const TeamSelect = ({ teams }: Props) => {
         <Dropdown
           placeholder="Choose your team"
           search
+          deburr
           selection
           options={options}
           onChange={(_, data) => setSelectedTeamId(data.value)}
