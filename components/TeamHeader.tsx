@@ -1,6 +1,8 @@
 import React from "react";
-import { Placeholder, Menu, Icon, Button } from "semantic-ui-react";
+import { Placeholder, Menu, Icon } from "semantic-ui-react";
 import Link from "next/link";
+
+import { useStorage } from "lib/hooks";
 
 export const placeholder = (
   <Placeholder>
@@ -15,10 +17,12 @@ interface Props {
 }
 
 const TeamHeader = ({ team }: Props) => {
+  const storage = useStorage();
+
   return (
     <Menu>
       <Menu.Item header>{team}</Menu.Item>
-      <Menu.Item style={{ cursor: "pointer" }}>
+      <Menu.Item style={{ cursor: "pointer" }} onClick={storage.reset}>
         <Link href="/">
           <Icon name="edit" />
         </Link>
