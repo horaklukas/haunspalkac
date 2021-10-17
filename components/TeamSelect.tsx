@@ -73,6 +73,7 @@ const TeamSelect = ({ teams }: Props) => {
           selection
           options={options}
           onChange={(_, data) => setSelectedTeamId(data.value)}
+          noResultsMessage={t("no-team-found")}
         />
       </Form.Field>
 
