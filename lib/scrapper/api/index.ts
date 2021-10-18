@@ -1,10 +1,10 @@
 import axios from "axios";
 
 import mockClient from "./mockClient";
-import { useMockApi } from "../config";
+import { PSMF_URL, useMockApi } from "../config";
 
 const psmfClient = axios.create({
-  baseURL: "http://www.psmf.cz",
+  baseURL: PSMF_URL,
 });
 
 const psmf = {

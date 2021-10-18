@@ -58,6 +58,7 @@ export const getTeamData = async (teamId: string) => {
 
   return {
     team,
+    web: path,
     schedule,
   };
 };

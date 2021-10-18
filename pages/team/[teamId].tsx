@@ -14,11 +14,10 @@ import MatchesSchedule from "components/MatchesSchedule";
 import TeamHeader, {
   placeholder as teamHeaderPlaceholder,
 } from "components/TeamHeader";
+import type { UnwrapPromise } from "lib/types";
 
-interface Props {
+interface Props extends UnwrapPromise<ReturnType<typeof getTeamData>> {
   fields: FieldsById;
-  team: string;
-  schedule: MatchSchedule;
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({
@@ -36,13 +35,11 @@ export const getStaticProps: GetStaticProps<Props> = async ({
     getFieldsById(),
     getTeamData(id),
   ]);
-  const { team, schedule } = teamData;
 
   return {
     props: {
       fields,
-      team,
-      schedule,
+      ...teamData,
       ...translations,
     },
     revalidate: 60 * MINUTE,
@@ -53,7 +50,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return { paths: [], fallback: true };
 };
 
-const Team = ({ fields, team, schedule }: Props) => {
+const Team = ({ fields, team, schedule, web }: Props) => {
   const { t } = useTranslation("team-detail");
   const { isFallback: isLoading } = useRouter();
 
@@ -64,7 +61,11 @@ const Team = ({ fields, team, schedule }: Props) => {
           <title>{t("team", { name: team })}</title>
         </Head>
 
-        {isLoading ? teamHeaderPlaceholder : <TeamHeader team={team} />}
+        {isLoading ? (
+          teamHeaderPlaceholder
+        ) : (
+          <TeamHeader team={team} webUrl={web} />
+        )}
 
         <MatchesSchedule isLoading={isLoading} schedule={schedule} />
       </section>

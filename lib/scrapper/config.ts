@@ -1,3 +1,5 @@
+export const PSMF_URL = "http://www.psmf.cz";
+
 export const psmfPaths = {
   fields: "vyveska/seznam-hrist/",
   search: "vyhledavani",
