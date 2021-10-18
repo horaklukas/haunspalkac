@@ -1,6 +1,9 @@
 import { orderBy } from "lodash";
+import { isAfter } from "date-fns";
+
 import { psmfPaths } from "./config";
 import psmf from "./api";
+import { getMatchesPagePath, getTeamMatches } from "./matches";
 
 type TeamSearchData = string;
 
@@ -40,4 +43,22 @@ export const getTeamName = async (teamId: string) => {
   const team = teams.find(({ id }) => id === teamId);
 
   return team?.label ?? null;
+};
+
+export const getTeamData = async (teamId: string) => {
+  const team = await getTeamName(teamId);
+
+  const path = await getMatchesPagePath(team);
+  const matches = await getTeamMatches(path);
+
+  const nowDate = new Date();
+  const schedule = matches.filter((match) =>
+    isAfter(new Date(match.date), nowDate)
+  );
+
+  return {
+    team,
+    web: path,
+    schedule,
+  };
 };

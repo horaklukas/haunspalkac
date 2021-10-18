@@ -1,7 +1,5 @@
 import { createContext, useContext } from "react";
-import type { FieldData } from "lib/scrapper";
-
-export type FieldsById = Record<string, FieldData>;
+import type { FieldsById } from "lib/scrapper";
 
 const FieldsContext = createContext<FieldsById>({});
 
