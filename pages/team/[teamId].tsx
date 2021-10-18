@@ -2,6 +2,8 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import { isAfter } from "date-fns";
 import type { GetStaticPaths, GetStaticProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 import {
   getFieldsList,
@@ -54,9 +56,16 @@ const getFieldsData = async () => {
   return fieldsByAbbr;
 };
 
-export const getStaticProps: GetStaticProps<Props> = async (req) => {
-  const teamId = getOnlyItem(req.params.teamId);
+export const getStaticProps: GetStaticProps<Props> = async ({
+  params,
+  locale,
+}) => {
+  const teamId = getOnlyItem(params.teamId);
   const [id] = teamId.match(/(\d)*$/) ?? [];
+  const translations = await serverSideTranslations(locale, [
+    "common",
+    "team-detail",
+  ]);
 
   const [fields, teamData] = await Promise.all([
     getFieldsData(),
@@ -69,6 +78,7 @@ export const getStaticProps: GetStaticProps<Props> = async (req) => {
       fields,
       team,
       schedule,
+      ...translations,
     },
     revalidate: 60 * MINUTE,
   };
@@ -79,13 +89,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 const Team = ({ fields, team, schedule }: Props) => {
+  const { t } = useTranslation("team-detail");
   const { isFallback: isLoading } = useRouter();
 
   return (
     <FieldsProvider value={fields}>
       <section style={{ padding: "1em" }}>
         <Head>
-          <title>Team {team}</title>
+          <title>{t("team", { name: team })}</title>
         </Head>
 
         {isLoading ? teamHeaderPlaceholder : <TeamHeader team={team} />}

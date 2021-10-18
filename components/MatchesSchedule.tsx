@@ -4,6 +4,7 @@ import { Placeholder, Segment } from "semantic-ui-react";
 import Match from "components/Match";
 import NextMatch from "components/NextMatch";
 import type { MatchSchedule } from "lib/scrapper";
+import { useTranslation } from "next-i18next";
 
 import styles from "./MatchesSchedule.module.css";
 
@@ -23,6 +24,8 @@ interface Props {
 }
 
 const MatchesSchedule = ({ isLoading, schedule }: Props) => {
+  const { t } = useTranslation("team-detail");
+
   return (
     <>
       <style jsx>{`
@@ -44,7 +47,7 @@ const MatchesSchedule = ({ isLoading, schedule }: Props) => {
         schedule.map((match, index) =>
           index === 0 ? (
             <React.Fragment key={match.date}>
-              <div className={styles.nextMatchTitle}>Next match</div>
+              <div className={styles.nextMatchTitle}>{t("next-match")}</div>
               <Segment className={styles.nextMatch}>
                 <NextMatch match={match} />
               </Segment>

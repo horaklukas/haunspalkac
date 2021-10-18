@@ -1,10 +1,11 @@
 import Head from "next/head";
 import type { AppProps } from "next/app";
 import Layout from "components/Layout";
+import { appWithTranslation } from "next-i18next";
 
 import "semantic-ui-css/semantic.min.css";
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <Layout>
       <Head>{/* <link rel="icon" href="/favicon.ico" /> */}</Head>
@@ -13,3 +14,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </Layout>
   );
 }
+
+export default appWithTranslation(App);
