@@ -22,11 +22,12 @@ const TeamHeader = ({ team }: Props) => {
   return (
     <Menu>
       <Menu.Item header>{team}</Menu.Item>
-      <Menu.Item style={{ cursor: "pointer" }} onClick={storage.reset}>
-        <Link href="/">
+
+      <Link href="/" passHref>
+        <Menu.Item style={{ cursor: "pointer" }} onClick={storage.reset}>
           <Icon name="edit" />
-        </Link>
-      </Menu.Item>
+        </Menu.Item>
+      </Link>
     </Menu>
   );
 };
