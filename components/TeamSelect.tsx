@@ -83,6 +83,7 @@ const TeamSelect = ({ teams }: Props) => {
             as="a"
             disabled={!selectedTeamId}
             onClick={() => confirmTeam(selectedTeamId)}
+            color={Boolean(selectedTeamId) ? "yellow" : undefined}
           >
             {t("select-team")}
           </Button>
