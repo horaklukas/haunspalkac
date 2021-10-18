@@ -21,7 +21,11 @@ const useStoredTeam = () => {
   );
 
   const storage = useStorage();
-  const storeTeamId = (id: string) => storage.set({ team: { id } });
+
+  const confirmTeam = (id: string) => {
+    setLoaderState(LoaderState.REDIRECTING);
+    storage.set({ team: { id } });
+  };
 
   const id = storage.data?.team?.id;
 
@@ -36,7 +40,7 @@ const useStoredTeam = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return [loaderState, storeTeamId] as const;
+  return [loaderState, confirmTeam] as const;
 };
 
 const createTeamOption = (team) => ({
@@ -52,14 +56,14 @@ interface Props {
 const TeamSelect = ({ teams }: Props) => {
   const [selectedTeamId, setSelectedTeamId] = useState(null);
   const options = useMemo(() => teams.map(createTeamOption), [teams]);
-  const [loaderState, storeTeamId] = useStoredTeam();
+  const [loaderState, confirmTeam] = useStoredTeam();
   const { t } = useTranslation("team-select");
 
   return (
     <Form>
-      <Loader active={loaderState !== LoaderState.HIDDEN}>
-        {t(`loader-${loaderState}`)}
-      </Loader>
+      <Dimmer active={loaderState !== LoaderState.HIDDEN} inverted>
+        <Loader>{t(`loader-${loaderState}`)}</Loader>
+      </Dimmer>
 
       <Form.Field>
         <Dropdown
@@ -78,7 +82,7 @@ const TeamSelect = ({ teams }: Props) => {
           <Button
             as="a"
             disabled={!selectedTeamId}
-            onClick={() => storeTeamId(selectedTeamId)}
+            onClick={() => confirmTeam(selectedTeamId)}
           >
             {t("select-team")}
           </Button>
