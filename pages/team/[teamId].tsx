@@ -1,22 +1,15 @@
 import { useRouter } from "next/router";
 import Head from "next/head";
-import { isAfter } from "date-fns";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 
-import {
-  getFieldsList,
-  getMatchesPagePath,
-  getTeamMatches,
-  getTeamName,
-} from "lib/scrapper";
-import type { MatchSchedule } from "lib/scrapper";
+import { getFieldsById, getTeamData } from "lib/scrapper";
+import type { MatchSchedule, FieldsById } from "lib/scrapper";
 import { getOnlyItem } from "lib/utils";
 import { MINUTE } from "lib/constants";
 
 import { FieldsProvider } from "components/FieldsProvider";
-import type { FieldsById } from "components/FieldsProvider";
 import MatchesSchedule from "components/MatchesSchedule";
 import TeamHeader, {
   placeholder as teamHeaderPlaceholder,
@@ -27,34 +20,6 @@ interface Props {
   team: string;
   schedule: MatchSchedule;
 }
-
-const getTeamData = async (teamId: string) => {
-  const team = await getTeamName(teamId);
-
-  const path = await getMatchesPagePath(team);
-  const matches = await getTeamMatches(path);
-
-  const nowDate = new Date();
-  const schedule = matches.filter((match) =>
-    isAfter(new Date(match.date), nowDate)
-  );
-
-  return {
-    team,
-    schedule,
-  };
-};
-
-const getFieldsData = async () => {
-  const fields = await getFieldsList();
-
-  const fieldsByAbbr: FieldsById = fields.reduce((byAbbr, field) => {
-    byAbbr[field.abbr] = field;
-    return byAbbr;
-  }, {});
-
-  return fieldsByAbbr;
-};
 
 export const getStaticProps: GetStaticProps<Props> = async ({
   params,
@@ -68,7 +33,7 @@ export const getStaticProps: GetStaticProps<Props> = async ({
   ]);
 
   const [fields, teamData] = await Promise.all([
-    getFieldsData(),
+    getFieldsById(),
     getTeamData(id),
   ]);
   const { team, schedule } = teamData;

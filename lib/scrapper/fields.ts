@@ -97,3 +97,16 @@ export const getFieldsList = async (): Promise<FieldData[]> => {
 
   return allFields;
 };
+
+export type FieldsById = Record<string, FieldData>;
+
+export const getFieldsById = async () => {
+  const fields = await getFieldsList();
+
+  const fieldsByAbbr: FieldsById = fields.reduce((byAbbr, field) => {
+    byAbbr[field.abbr] = field;
+    return byAbbr;
+  }, {});
+
+  return fieldsByAbbr;
+};
