@@ -63,6 +63,7 @@ const getMatchDate = (
     locale: cs,
   });
 
+  date.setFullYear(year);
   date.setHours(Number(hour));
   date.setMinutes(Number(minute));
 
