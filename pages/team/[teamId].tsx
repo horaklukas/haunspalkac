@@ -5,7 +5,6 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
 
 import { getFieldsById, getTeamData } from "lib/scrapper";
-import type { MatchSchedule, FieldsById } from "lib/scrapper";
 import { getOnlyItem } from "lib/utils";
 import { MINUTE } from "lib/constants";
 
@@ -17,8 +16,7 @@ import TeamHeader, {
 import type { UnwrapPromise } from "lib/types";
 
 interface Props extends UnwrapPromise<ReturnType<typeof getTeamData>> {
-  fields: FieldsById;
-  error?: Error;
+  fields: UnwrapPromise<ReturnType<typeof getFieldsById>>;
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({
