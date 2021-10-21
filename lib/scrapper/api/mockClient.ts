@@ -9,12 +9,13 @@ import {
   meteField,
   mikuField,
 } from "../__tests__/fields.fixtures";
+import { matchesPage } from "../__tests__/matches.fixtures";
 import {
-  matchesPage,
+  leaguePagePath,
+  leagueTablePage,
   teamPage,
   teamPagePath,
-} from "../__tests__/matches.fixtures";
-import { leaguePagePath, leagueTablePage } from "../__tests__/teams.fixtures";
+} from "../__tests__/teams.fixtures";
 
 function delay(timeout: number) {
   return new Promise((resolve) => lodashDelay(resolve, timeout));

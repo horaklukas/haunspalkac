@@ -4,7 +4,7 @@ import { isAfter } from "date-fns";
 
 import { psmfPaths } from "./config";
 import psmf from "./api";
-import { getMatchesPagePath, getTeamMatches } from "./matches";
+import { getTeamMatches } from "./matches";
 import { getPageTableData, getText } from "./utils";
 
 type TeamSearchData = string;
@@ -24,6 +24,39 @@ export interface TeamStatistic {
   score: string;
   points: number;
 }
+
+export const getTeamPagePath = async (teamName: string) => {
+  const response = await psmf.get(psmfPaths.search, {
+    params: {
+      query: teamName,
+    },
+  });
+
+  const html = response.data;
+  const $ = cheerio.load(html);
+
+  const teamTitle = $(`h2`).filter(
+    (_: number, title: cheerio.Element) =>
+      $(title).text().trim() === `Tým ${teamName}`
+  );
+
+  if (teamTitle.length) {
+    return response.request.path;
+  }
+
+  const link = $(".main-content a").filter(
+    (_: number, link: cheerio.Element) => {
+      const href = $(link).attr("href");
+      return href !== undefined && href.includes("hanspaulska-liga");
+    }
+  );
+
+  if (link.length === 1) {
+    return $(link).attr("href");
+  }
+
+  throw new Error("Coulnd't get team page path");
+};
 
 export const getTeamsStatistics = async (
   leaguePagePath: string
@@ -85,7 +118,7 @@ export const getTeamName = async (teamId: string) => {
 export const getTeamData = async (teamId: string) => {
   const team = await getTeamName(teamId);
 
-  const path = await getMatchesPagePath(team);
+  const path = await getTeamPagePath(team);
   const matches = await getTeamMatches(path);
 
   const nowDate = new Date();

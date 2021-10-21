@@ -15,39 +15,6 @@ export interface MatchData {
 
 export type MatchSchedule = MatchData[];
 
-export const getMatchesPagePath = async (teamName: string) => {
-  const response = await psmf.get(psmfPaths.search, {
-    params: {
-      query: teamName,
-    },
-  });
-
-  const html = response.data;
-  const $ = cheerio.load(html);
-
-  const teamTitle = $(`h2`).filter(
-    (_: number, title: cheerio.Element) =>
-      $(title).text().trim() === `Tým ${teamName}`
-  );
-
-  if (teamTitle.length) {
-    return response.request.path;
-  }
-
-  const link = $(".main-content a").filter(
-    (_: number, link: cheerio.Element) => {
-      const href = $(link).attr("href");
-      return href !== undefined && href.includes("hanspaulska-liga");
-    }
-  );
-
-  if (link.length === 1) {
-    return $(link).attr("href");
-  }
-
-  throw new Error("Coulnd't get team matches path");
-};
-
 const getMatchDate = (
   timeColumn: cheerio.Element,
   dateColumn: cheerio.Element,

@@ -1,13 +1,8 @@
 import { when } from "jest-when";
 import psmf from "../api";
-import { getMatchesPagePath, getTeamMatches } from "../matches";
-import {
-  crossroadPage,
-  teamPage,
-  matchesPage,
-  teamPagePath,
-  crossroadTeamPath,
-} from "./matches.fixtures";
+import { getTeamMatches } from "../matches";
+import { matchesPage } from "./matches.fixtures";
+import { teamPagePath } from "./teams.fixtures";
 import type { AxiosResponse } from "axios";
 
 jest.mock("../api", () => ({
@@ -36,55 +31,6 @@ describe("Matches", () => {
       },
     } as AxiosResponse;
   }
-
-  describe("getMatchesPagePath", () => {
-    beforeEach(() => {
-      (psmf.get as jest.Mock).mockReset();
-    });
-
-    it("should return path when team title found in main content", async () => {
-      const html = teamPage;
-      const team = `Viktoria Bítovská A`;
-      const expectedPath = teamPagePath;
-
-      expect.assertions(1);
-
-      when(psmf.get)
-        .calledWith("vyhledavani", { params: { query: team } })
-        .mockResolvedValue(createResponse(html, expectedPath));
-
-      await expect(getMatchesPagePath(team)).resolves.toEqual(expectedPath);
-    });
-
-    it("should find path from link when ambiguous results returned", async () => {
-      const html = crossroadPage;
-      const team = `Pražská eS`;
-      const expectedPath = crossroadTeamPath;
-
-      expect.assertions(1);
-
-      when(psmf.get)
-        .calledWith("vyhledavani", { params: { query: team } })
-        .mockResolvedValue(createResponse(html, expectedPath));
-
-      await expect(getMatchesPagePath(team)).resolves.toEqual(expectedPath);
-    });
-
-    it("should throw when correct team path not found", async () => {
-      const html = ``;
-      const team = `pražskáEs`;
-
-      expect.assertions(1);
-
-      when(psmf.get)
-        .calledWith("vyhledavani", { params: { query: team } })
-        .mockResolvedValue(createResponse(html));
-
-      await expect(getMatchesPagePath(team)).rejects.toThrow(
-        `Coulnd't get team matches path`
-      );
-    });
-  });
 
   describe("getTeamMatches", () => {
     beforeAll(() => {

@@ -1,8 +1,17 @@
 import { when } from "jest-when";
-import psmf from "../api";
-import { getTeamsStatistics } from "../teams";
-import { leaguePagePath, leagueTablePage } from "./teams.fixtures";
 import type { AxiosResponse } from "axios";
+
+import psmf from "../api";
+import { getTeamPagePath, getTeamsStatistics } from "../teams";
+
+import {
+  leaguePagePath,
+  leagueTablePage,
+  crossroadPage,
+  teamPage,
+  teamPagePath,
+  crossroadTeamPath,
+} from "./teams.fixtures";
 
 jest.mock("../api", () => ({
   ...(jest.requireActual("../api") as any),
@@ -30,6 +39,55 @@ describe("Teams", () => {
       },
     } as AxiosResponse;
   }
+
+  describe("getTeamPagePath", () => {
+    beforeEach(() => {
+      (psmf.get as jest.Mock).mockReset();
+    });
+
+    it("should return path when team title found in main content", async () => {
+      const html = teamPage;
+      const team = `Viktoria Bítovská A`;
+      const expectedPath = teamPagePath;
+
+      expect.assertions(1);
+
+      when(psmf.get)
+        .calledWith("vyhledavani", { params: { query: team } })
+        .mockResolvedValue(createResponse(html, expectedPath));
+
+      await expect(getTeamPagePath(team)).resolves.toEqual(expectedPath);
+    });
+
+    it("should find path from link when ambiguous results returned", async () => {
+      const html = crossroadPage;
+      const team = `Pražská eS`;
+      const expectedPath = crossroadTeamPath;
+
+      expect.assertions(1);
+
+      when(psmf.get)
+        .calledWith("vyhledavani", { params: { query: team } })
+        .mockResolvedValue(createResponse(html, expectedPath));
+
+      await expect(getTeamPagePath(team)).resolves.toEqual(expectedPath);
+    });
+
+    it("should throw when correct team path not found", async () => {
+      const html = ``;
+      const team = `pražskáEs`;
+
+      expect.assertions(1);
+
+      when(psmf.get)
+        .calledWith("vyhledavani", { params: { query: team } })
+        .mockResolvedValue(createResponse(html));
+
+      await expect(getTeamPagePath(team)).rejects.toThrow(
+        `Coulnd't get team page path`
+      );
+    });
+  });
 
   describe("getTeamsStatistics", () => {
     beforeEach(() => {
