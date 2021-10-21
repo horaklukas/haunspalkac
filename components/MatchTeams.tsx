@@ -2,13 +2,20 @@ import React from "react";
 import { Grid, Header, GridColumn } from "semantic-ui-react";
 
 import type { MatchData } from "lib/scrapper";
+
+import TeamStatistics from "./TeamStatistics";
 import styles from "./MatchTeams.module.css";
 
 interface Props extends Pick<MatchData, "teams"> {
   size?: "medium" | "huge";
+  showStatistics?: boolean;
 }
 
-const MatchTeams = ({ teams, size = "medium" }: Props) => {
+const MatchTeams = ({
+  teams,
+  size = "medium",
+  showStatistics = false,
+}: Props) => {
   return (
     <Grid className={styles.teams} container>
       <GridColumn
@@ -17,9 +24,12 @@ const MatchTeams = ({ teams, size = "medium" }: Props) => {
         mobile={16}
         computer={7}
       >
-        <Header as="span" size={size}>
-          {teams.home}
-        </Header>
+        <div className={styles.wrapper}>
+          <Header as="span" size={size} className={styles.name}>
+            {teams.home}
+          </Header>
+          {showStatistics && <TeamStatistics teamName={teams.home} />}
+        </div>
       </GridColumn>
       <GridColumn
         verticalAlign="middle"
@@ -35,9 +45,12 @@ const MatchTeams = ({ teams, size = "medium" }: Props) => {
         mobile={16}
         computer={7}
       >
-        <Header as="span" size={size}>
-          {teams.away}
-        </Header>
+        <div className={styles.wrapper}>
+          <Header as="span" size={size} className={styles.name}>
+            {teams.away}
+          </Header>
+          {showStatistics && <TeamStatistics teamName={teams.away} />}
+        </div>
       </GridColumn>
     </Grid>
   );

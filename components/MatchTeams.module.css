@@ -1,3 +1,14 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.name {
+  display: block;
+  margin-bottom: 0 !important;
+  margin-right: 1rem !important;
+}
+
 .home,
 .away,
 .separator {
@@ -11,6 +22,11 @@
 
   .away {
     text-align: left;
+  }
+
+  .wrapper {
+    flex-direction: column;
+    margin-right: 0 !important;
   }
 }
 

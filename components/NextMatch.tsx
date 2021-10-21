@@ -17,7 +17,7 @@ const NextMatch = ({ match }: Props) => {
         <MatchDate date={match.date} />
       </Header>
 
-      <MatchTeams teams={match.teams} size="huge" />
+      <MatchTeams teams={match.teams} size="huge" showStatistics />
 
       <div style={{ margin: "1em" }}>
         <FieldName fieldId={match.field} />
