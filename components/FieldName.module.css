@@ -1,0 +1,9 @@
+.textLayout {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.id {
+  font-size: 0.9em;
+}
