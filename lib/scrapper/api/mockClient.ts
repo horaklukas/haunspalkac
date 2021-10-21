@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import { delay } from "lodash";
+import { delay as lodashDelay } from "lodash";
 import { psmfPaths } from "../config";
 
 import {
@@ -14,6 +14,11 @@ import {
   teamPage,
   teamPagePath,
 } from "../__tests__/matches.fixtures";
+import { leaguePagePath, leagueTablePage } from "../__tests__/teams.fixtures";
+
+function delay(timeout: number) {
+  return new Promise((resolve) => lodashDelay(resolve, timeout));
+}
 
 function createFakeResponse(data: string, path?: string) {
   return {
@@ -60,8 +65,13 @@ const mockClient = {
     }
 
     if (path === psmfPaths.matchSchedule(teamPagePath)) {
-      await new Promise((resolve) => delay(resolve, 5000));
+      delay(5000);
       return createFakeHTMLResponse(matchesPage);
+    }
+
+    if (path === psmfPaths.currentTable(leaguePagePath)) {
+      delay(2000);
+      return createFakeHTMLResponse(leagueTablePage);
     }
 
     if (path === psmfPaths.teamsScript) {
