@@ -11,7 +11,7 @@ import {
   mikuField,
   motoField,
 } from "./fields.fixtures";
-import type { AxiosResponse } from "axios";
+import { createFakeHTMLResponse } from "../api/mock/utils";
 
 jest.mock("../api", () => ({
   ...(jest.requireActual("../api") as any),
@@ -22,21 +22,12 @@ jest.mock("../api", () => ({
 }));
 
 describe("Fields", () => {
-  function createResponse(html: string) {
-    return {
-      data: `
-        <html>
-        <head></head>
-        <body>
-        <div class="main-content">
-        <table class="standard" cellspacing="0" cellpadding="0" width="100%">
-        ${html}
-        </table>
-        </div>
-        </body>
-        </html>
-        `,
-    } as AxiosResponse;
+  function createFieldsTable(data) {
+    return `
+      <table class="standard" cellspacing="0" cellpadding="0" width="100%">
+      ${data}
+      </table>
+    `;
   }
 
   beforeEach(() => {
@@ -44,16 +35,16 @@ describe("Fields", () => {
   });
 
   it("should omit fields list headers", async () => {
-    const html = `
+    const html = createFieldsTable(`
         ${mainHeader}
         ${aritmaField}
         ${midHeader}
         ${bechField}
-    `;
+    `);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -61,11 +52,11 @@ describe("Fields", () => {
   });
 
   it("should parse simple single field abbr", async () => {
-    const html = bechField;
+    const html = createFieldsTable(bechField);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -74,11 +65,11 @@ describe("Fields", () => {
   });
 
   it("should parse single field abbr with comment", async () => {
-    const html = edenField;
+    const html = createFieldsTable(edenField);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -87,11 +78,11 @@ describe("Fields", () => {
   });
 
   it("should parse simple multiple field abbr", async () => {
-    const html = mikuField;
+    const html = createFieldsTable(mikuField);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -103,11 +94,11 @@ describe("Fields", () => {
   });
 
   it("should parse multiple field abbr with comment", async () => {
-    const html = meteField;
+    const html = createFieldsTable(meteField);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -117,11 +108,11 @@ describe("Fields", () => {
   });
 
   it("should parse and assign name to single field", async () => {
-    const html = bechField;
+    const html = createFieldsTable(bechField);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -130,12 +121,12 @@ describe("Fields", () => {
   });
 
   it("should parse and assign name to multiple field", async () => {
-    const html = mikuField;
+    const html = createFieldsTable(mikuField);
     const name = "Mikulova";
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -147,11 +138,11 @@ describe("Fields", () => {
   });
 
   it("should parse field descr", async () => {
-    const html = bechField;
+    const html = createFieldsTable(bechField);
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -164,13 +155,13 @@ V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0ge
   });
 
   it("should parse field link for one field", async () => {
-    const html = aritmaField;
+    const html = createFieldsTable(aritmaField);
     const link =
       "http://mapy.cz/zakladni?x=14.3407596&y=50.0985489&z=15&source=addr&id=8985624";
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -179,13 +170,13 @@ V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0ge
   });
 
   it("should parse field link for multiple fields with one link", async () => {
-    const html = meteField;
+    const html = createFieldsTable(meteField);
     const link =
       "http://mapy.cz/zakladni?x=14.4673609&y=50.1092719&z=15&source=addr&id=11165881&q=U%20Meteoru%2029%2F3%2C";
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 
@@ -195,7 +186,7 @@ V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0ge
   });
 
   it("should parse field link for multiple fields with individual links", async () => {
-    const html = motoField;
+    const html = createFieldsTable(motoField);
     const link1 =
       "https://mapy.cz/zakladni?x=14.3611348&y=50.0510808&z=18&base=ophoto&source=coor&id=14.36198204755783%2C50.05139082670212";
     const link2 =
@@ -207,7 +198,7 @@ V areálu udržujte čistotu, používejte jen snadno dostupná WC! UMT 3.\xa0ge
 
     when(psmf.get)
       .calledWith("vyveska/seznam-hrist/")
-      .mockResolvedValue(createResponse(html));
+      .mockResolvedValue(createFakeHTMLResponse(html));
 
     const fields = await getFieldsList();
 

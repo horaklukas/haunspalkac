@@ -1,5 +1,5 @@
 import cheerio from "cheerio";
-import { getText } from "./utils";
+import { getPageTableData, getText } from "./utils";
 import psmf from "./api";
 import { trim } from "lodash";
 import { psmfPaths } from "./config";
@@ -69,30 +69,24 @@ export const getFieldsList = async (): Promise<FieldData[]> => {
 
   const allFields: FieldData[] = [];
 
-  $(".main-content table tr").each((_: number, row: cheerio.Element) => {
-    const columns = $(row).find("td");
+  getPageTableData($).forEach((columns) => {
+    const fields = parseFieldData(columns[0], $);
 
-    try {
-      const fields = parseFieldData(columns[0], $);
-
-      if (!fields) {
-        return;
-      }
-
-      fields.forEach(({ abbr, link }) => {
-        const name = getText(columns[1], $);
-        const info = getText(columns[2], $);
-
-        allFields.push({
-          abbr,
-          name,
-          info,
-          link: link,
-        });
-      });
-    } catch (e) {
-      // TODO - handle errors
+    if (!fields) {
+      return;
     }
+
+    fields.forEach(({ abbr, link }) => {
+      const name = getText(columns[1], $);
+      const info = getText(columns[2], $);
+
+      allFields.push({
+        abbr,
+        name,
+        info,
+        link: link,
+      });
+    });
   });
 
   return allFields;

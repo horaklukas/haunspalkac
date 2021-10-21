@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import mockClient from "./mockClient";
+import mockClient from "./mock/client";
 import { PSMF_URL, useMockApi } from "../config";
 
 const psmfClient = axios.create({

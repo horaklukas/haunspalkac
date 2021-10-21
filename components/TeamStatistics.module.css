@@ -1,0 +1,12 @@
+.statistic {
+  display: inline-flex;
+}
+
+.divider {
+  display: inline-block;
+
+  width: 1px;
+  margin: 0.1em 0.5em;
+
+  background-color: rgba(128, 128, 128, 0.3);
+}
