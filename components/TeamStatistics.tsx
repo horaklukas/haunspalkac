@@ -1,3 +1,4 @@
+import { Icon } from "semantic-ui-react";
 import { useTeamStatistics } from "./TeamsStatisticsProvider";
 
 import styles from "./TeamStatistics.module.css";
@@ -15,9 +16,14 @@ const TeamStatistics = ({ teamName }: Props) => {
 
   return (
     <p className={styles.statistic}>
-      <span>{statistics.order}.</span>
-      <span className={styles.divider} />
-      <span>{statistics.score}</span>
+      <span>
+        <Icon name="trophy" className={styles.icon} />
+        {statistics.order}.
+      </span>
+      <span>
+        <Icon name="futbol" className={styles.icon} />
+        {statistics.score}
+      </span>
     </p>
   );
 };
