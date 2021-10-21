@@ -1,6 +1,10 @@
 import { Icon, Button } from "semantic-ui-react";
-import { useField } from "./FieldsProvider";
 import { useTranslation } from "next-i18next";
+import { useState } from "react";
+
+import { useField } from "./FieldsProvider";
+
+import styles from "./FieldDetail.module.css";
 
 interface Props {
   fieldId: string;
@@ -8,6 +12,7 @@ interface Props {
 
 const FieldDetail = ({ fieldId }: Props) => {
   const { t } = useTranslation("team-detail");
+  const [expanded, setInfoExpanded] = useState(false);
   const fieldData = useField(fieldId);
 
   if (!fieldData) {
@@ -16,7 +21,7 @@ const FieldDetail = ({ fieldId }: Props) => {
 
   return (
     <>
-      <p style={{ textAlign: "center" }}>
+      <p className={styles.buttonWrapper}>
         <Button
           icon
           labelPosition="right"
@@ -27,10 +32,17 @@ const FieldDetail = ({ fieldId }: Props) => {
           basic
         >
           {t("show-field-on-map")}
-          <Icon name="map" style={{ background: "transparent" }} />
+          <Icon name="map" className={styles.icon} />
         </Button>
       </p>
-      <p>{fieldData.info}</p>
+      <p
+        className={[styles.info, expanded && styles.expanded]
+          .filter(Boolean)
+          .join(" ")}
+        onClick={() => setInfoExpanded(!expanded)}
+      >
+        {fieldData.info}
+      </p>
     </>
   );
 };
