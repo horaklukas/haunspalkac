@@ -1,11 +1,15 @@
-import { orderBy } from "lodash";
+import { orderBy, snakeCase } from "lodash";
 import cheerio from "cheerio";
 import { isAfter } from "date-fns";
+import NodeCache from "node-cache";
 
+import { MINUTE } from "../constants";
 import { psmfPaths } from "./config";
 import psmf from "./api";
 import { getTeamMatches } from "./matches";
 import { getPageTableData, getText, leaguePathFromTeamPage } from "./utils";
+
+const scrappedDataCache = new NodeCache();
 
 type TeamSearchData = string;
 
@@ -25,7 +29,7 @@ export interface TeamStatistic {
   points: number;
 }
 
-export const getTeamPagePath = async (teamName: string) => {
+const searchTeamPath = async (teamName: string) => {
   const response = await psmf.get(psmfPaths.search, {
     params: {
       query: teamName,
@@ -58,6 +62,19 @@ export const getTeamPagePath = async (teamName: string) => {
   throw new Error("Coulnd't get team page path");
 };
 
+export const getTeamPagePath = async (teamName: string) => {
+  const cacheKey = `teams.${snakeCase(teamName)}`;
+  let teamPagePath = scrappedDataCache.get<string>(cacheKey);
+
+  if (!teamPagePath) {
+    teamPagePath = await searchTeamPath(teamName);
+
+    scrappedDataCache.set(cacheKey, teamPagePath, 24 * 60 * MINUTE);
+  }
+
+  return teamPagePath;
+};
+
 function parseScriptData<Item extends any>(
   dataScript: string,
   dataName: string
@@ -71,16 +88,19 @@ function parseScriptData<Item extends any>(
 }
 
 export const getTeams = async (): Promise<TeamFormData[]> => {
-  const response = await psmf.get(psmfPaths.teamsScript);
+  let teams = scrappedDataCache.get<TeamFormData[]>("teams");
 
-  // Note: Script contains `searchJsonData` and `formJsonData` variables.
-  const [_, formDataScript] = response.data.split(";");
-  const formData = parseScriptData<TeamFormData>(formDataScript, "form");
+  if (!teams) {
+    const response = await psmf.get(psmfPaths.teamsScript);
 
-  // TODO - handle errors
-  // TODO - cache data
+    // Note: Script contains `searchJsonData` and `formJsonData` variables.
+    const [_, formDataScript] = response.data.split(";");
+    teams = parseScriptData<TeamFormData>(formDataScript, "form");
 
-  return formData;
+    scrappedDataCache.set("teams", teams, 24 * 60 * MINUTE);
+  }
+
+  return teams;
 };
 
 export const getTeamName = async (teamId: string) => {
