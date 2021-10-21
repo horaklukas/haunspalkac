@@ -3,7 +3,7 @@ import psmf from "../api";
 import { getTeamMatches } from "../matches";
 import { matchesPage } from "./matches.fixtures";
 import { teamPagePath } from "./teams.fixtures";
-import type { AxiosResponse } from "axios";
+import { createFakeHTMLResponse } from "../api/mock/utils";
 
 jest.mock("../api", () => ({
   ...(jest.requireActual("../api") as any),
@@ -14,29 +14,11 @@ jest.mock("../api", () => ({
 }));
 
 describe("Matches", () => {
-  function createResponse(html: string, path?: string) {
-    return {
-      data: `
-        <html>
-        <head></head>
-        <body>
-        <div class="main-content">
-        ${html}
-        </div>
-        </body>
-        </html>
-        `,
-      request: {
-        path,
-      },
-    } as AxiosResponse;
-  }
-
   describe("getTeamMatches", () => {
     beforeAll(() => {
       when(psmf.get)
         .calledWith(`${teamPagePath}rozpis-zapasu`)
-        .mockResolvedValue(createResponse(matchesPage));
+        .mockResolvedValue(createFakeHTMLResponse(matchesPage));
     });
 
     it("should return list of matches", async () => {

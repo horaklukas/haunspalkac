@@ -1,4 +1,16 @@
-export const leaguePagePath = `/souteze/2021-hanspaulska-liga-podzim/7-f/`;
+const banner = `
+<div class="banner-center">
+    <div class="banner-box banner-full">
+        <a href="/vyhledavani/?cmd=banner&amp;id=77" title="NIKE_AKCE" target="_blank"><img src="/res/data/028/003420.jpg?seek=1587989469" alt="NIKE_AKCE"></a>
+    </div>
+    <div class="banner-box" style="width:600px;height:60px;">
+        <a href="/vyhledavani/?cmd=banner&amp;id=78" title="NIKE_AKCE" target="_blank"><img src="/res/data/028/003419.jpg?seek=1587989356" alt="NIKE_AKCE"></a>
+    </div>
+</div>
+<div class="cl"></div>
+`;
+
+export const leaguePagePath = `/souteze/2021-hanspaulska-liga-podzim/7-e/`;
 
 export const leagueTablePage = `
 <div class="content">
@@ -176,18 +188,6 @@ export const leagueTablePage = `
         </ul>
 	</div>	
 </div>
-`;
-
-const banner = `
-<div class="banner-center">
-    <div class="banner-box banner-full">
-        <a href="/vyhledavani/?cmd=banner&amp;id=77" title="NIKE_AKCE" target="_blank"><img src="/res/data/028/003420.jpg?seek=1587989469" alt="NIKE_AKCE"></a>
-    </div>
-    <div class="banner-box" style="width:600px;height:60px;">
-        <a href="/vyhledavani/?cmd=banner&amp;id=78" title="NIKE_AKCE" target="_blank"><img src="/res/data/028/003419.jpg?seek=1587989356" alt="NIKE_AKCE"></a>
-    </div>
-</div>
-<div class="cl"></div>
 `;
 
 export const crossroadPage = `

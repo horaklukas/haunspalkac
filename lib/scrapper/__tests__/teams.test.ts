@@ -1,8 +1,7 @@
 import { when } from "jest-when";
-import type { AxiosResponse } from "axios";
 
 import psmf from "../api";
-import { getTeamPagePath, getTeamsStatistics } from "../teams";
+import { getTeamPagePath, getLeagueTeamsStatistics } from "../teams";
 
 import {
   leaguePagePath,
@@ -12,6 +11,11 @@ import {
   teamPagePath,
   crossroadTeamPath,
 } from "./teams.fixtures";
+import {
+  createFakeHTMLResponse,
+  createFakeJsonScriptDataResponse,
+} from "../api/mock/utils";
+import { psmfPaths } from "../config";
 
 jest.mock("../api", () => ({
   ...(jest.requireActual("../api") as any),
@@ -22,24 +26,6 @@ jest.mock("../api", () => ({
 }));
 
 describe("Teams", () => {
-  function createResponse(html: string, path?: string) {
-    return {
-      data: `
-        <html>
-        <head></head>
-        <body>
-        <div class="main-content">
-        ${html}
-        </div>
-        </body>
-        </html>
-        `,
-      request: {
-        path,
-      },
-    } as AxiosResponse;
-  }
-
   describe("getTeamPagePath", () => {
     beforeEach(() => {
       (psmf.get as jest.Mock).mockReset();
@@ -53,8 +39,8 @@ describe("Teams", () => {
       expect.assertions(1);
 
       when(psmf.get)
-        .calledWith("vyhledavani", { params: { query: team } })
-        .mockResolvedValue(createResponse(html, expectedPath));
+        .calledWith(psmfPaths.search, { params: { query: team } })
+        .mockResolvedValue(createFakeHTMLResponse(html, expectedPath));
 
       await expect(getTeamPagePath(team)).resolves.toEqual(expectedPath);
     });
@@ -67,8 +53,8 @@ describe("Teams", () => {
       expect.assertions(1);
 
       when(psmf.get)
-        .calledWith("vyhledavani", { params: { query: team } })
-        .mockResolvedValue(createResponse(html, expectedPath));
+        .calledWith(psmfPaths.search, { params: { query: team } })
+        .mockResolvedValue(createFakeHTMLResponse(html, expectedPath));
 
       await expect(getTeamPagePath(team)).resolves.toEqual(expectedPath);
     });
@@ -80,8 +66,8 @@ describe("Teams", () => {
       expect.assertions(1);
 
       when(psmf.get)
-        .calledWith("vyhledavani", { params: { query: team } })
-        .mockResolvedValue(createResponse(html));
+        .calledWith(psmfPaths.search, { params: { query: team } })
+        .mockResolvedValue(createFakeHTMLResponse(html));
 
       await expect(getTeamPagePath(team)).rejects.toThrow(
         `Coulnd't get team page path`
@@ -89,9 +75,23 @@ describe("Teams", () => {
     });
   });
 
-  describe("getTeamsStatistics", () => {
+  describe("getLeagueTeamsStatistics", () => {
     beforeEach(() => {
       (psmf.get as jest.Mock).mockReset();
+
+      const team = "Pražská eS";
+
+      when(psmf.get)
+        .calledWith(psmfPaths.teamsScript)
+        .mockResolvedValue(
+          createFakeJsonScriptDataResponse([{ id: "2", label: team }])
+        );
+
+      when(psmf.get)
+        .calledWith(psmfPaths.search, { params: { query: team } })
+        .mockResolvedValue(
+          createFakeHTMLResponse(crossroadPage, crossroadTeamPath)
+        );
     });
 
     it("should return teams statistics", async () => {
@@ -101,9 +101,9 @@ describe("Teams", () => {
 
       when(psmf.get)
         .calledWith(`${leaguePagePath}prubezna-tabulka`)
-        .mockResolvedValue(createResponse(html));
+        .mockResolvedValue(createFakeHTMLResponse(html));
 
-      const statistics = await getTeamsStatistics(leaguePagePath);
+      const statistics = await getLeagueTeamsStatistics("2");
 
       expect(statistics).toHaveLength(12);
       expect(statistics[0]).toEqual({
