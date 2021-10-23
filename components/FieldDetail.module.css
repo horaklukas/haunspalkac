@@ -13,12 +13,11 @@
 
   cursor: pointer;
 
-  transition: max-height 0.25s ease-out;
+  transition: max-height 0.5s ease-in-out;
 }
 
 .expanded {
   max-height: 500px;
-  transition: max-height 0.25s ease-in;
 }
 
 .info::after {
@@ -30,11 +29,10 @@
   left: 0;
 
   background-image: linear-gradient(rgba(255, 255, 255, 0), rgb(255, 255, 255));
-  transition: background-image 0.25s ease-out;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .expanded:after {
-  content: none;
-  background: transparent;
-  transition: background-image 0.25s ease-in;
+  opacity: 0;
 }
