@@ -12,6 +12,6 @@
 
 @media screen and (max-width: 576px) {
   .nextMatch {
-    padding: 1em !important;
+    padding: 2em 1em !important;
   }
 }
