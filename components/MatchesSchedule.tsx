@@ -29,13 +29,6 @@ const MatchesSchedule = ({ isLoading, schedule }: Props) => {
 
   return (
     <>
-      <style jsx>{`
-        .next-match {
-          max-width: 900px;
-          margin: 0 auto;
-          padding: 3em;
-        }
-      `}</style>
       {isLoading && (
         <>
           {matchPlaceholder}
