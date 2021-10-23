@@ -10,27 +10,27 @@ import styles from "./Match.module.css";
 
 interface Props {
   match: MatchData;
+  showDetail: boolean;
 }
 
-const Match = ({ match }: Props) => {
+const Match = ({ match, showDetail }: Props) => {
   return (
     <div className={styles.container}>
       <Label className={styles.label}>
         <MatchDate date={match.date} />
       </Label>
 
-      <MatchTeams teams={match.teams} />
+      <MatchTeams teams={match.teams} showStatistics={showDetail} />
 
-      <Popup
-        content={<FieldDetail fieldId={match.field} />}
-        trigger={
-          <Label className={styles.label}>
-            <FieldName fieldId={match.field} />
-          </Label>
-        }
-        on="click"
-        position="left center"
-      />
+      <Label className={styles.label}>
+        <FieldName fieldId={match.field} />
+      </Label>
+
+      {showDetail && (
+        <div className={styles.fieldDetail}>
+          <FieldDetail fieldId={match.field} />
+        </div>
+      )}
     </div>
   );
 };

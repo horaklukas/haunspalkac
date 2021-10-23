@@ -8,11 +8,17 @@ import styles from "./FieldDetail.module.css";
 
 interface Props {
   fieldId: string;
+  expandable?: boolean;
 }
 
-const FieldDetail = ({ fieldId }: Props) => {
+const FieldDetail = ({ fieldId, expandable = false }: Props) => {
   const { t } = useTranslation("team-detail");
-  const [expanded, setInfoExpanded] = useState(false);
+
+  // If not expandable, it's always expanded
+  const defaultExpanded = expandable ? false : true;
+  const [expanded, setInfoExpanded] = useState(defaultExpanded);
+  const toggleExpand = () => setInfoExpanded(!expanded);
+
   const fieldData = useField(fieldId);
 
   if (!fieldData) {
@@ -39,7 +45,7 @@ const FieldDetail = ({ fieldId }: Props) => {
         className={[styles.info, expanded && styles.expanded]
           .filter(Boolean)
           .join(" ")}
-        onClick={() => setInfoExpanded(!expanded)}
+        onClick={expandable ? toggleExpand : null}
       >
         {fieldData.info}
       </p>

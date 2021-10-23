@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Placeholder, Segment } from "semantic-ui-react";
 import Match from "components/Match";
@@ -25,6 +25,7 @@ interface Props {
 
 const MatchesSchedule = ({ isLoading, schedule }: Props) => {
   const { t } = useTranslation("team-detail");
+  const [expandedMatch, setExpandedMatch] = useState<number>(null);
 
   return (
     <>
@@ -53,8 +54,14 @@ const MatchesSchedule = ({ isLoading, schedule }: Props) => {
               </Segment>
             </React.Fragment>
           ) : (
-            <Segment key={match.date}>
-              <Match match={match} />
+            <Segment
+              key={match.date}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                setExpandedMatch(index === expandedMatch ? null : index);
+              }}
+            >
+              <Match match={match} showDetail={index === expandedMatch} />
             </Segment>
           )
         )}

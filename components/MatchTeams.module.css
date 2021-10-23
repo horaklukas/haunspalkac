@@ -1,3 +1,8 @@
+
+.teams {
+  flex: 1 1;
+}
+
 .wrapper {
   display: inline-flex;
   align-items: center;
@@ -28,10 +33,6 @@
     flex-direction: column;
     margin-right: 0 !important;
   }
-}
-
-.teams {
-  flex-grow: 1;
 }
 
 @media screen and (max-width: 576px) {

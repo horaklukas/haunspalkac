@@ -22,7 +22,7 @@ const NextMatch = ({ match }: Props) => {
       <div style={{ margin: "1em" }}>
         <FieldName fieldId={match.field} />
       </div>
-      <FieldDetail fieldId={match.field} />
+      <FieldDetail fieldId={match.field} expandable />
     </div>
   );
 };

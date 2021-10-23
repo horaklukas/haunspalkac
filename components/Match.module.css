@@ -1,6 +1,7 @@
 .container {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .home,
@@ -16,9 +17,15 @@
   white-space: pre;
 }
 
+.fieldDetail {
+  flex-basis: 100%;
+  margin-top: 1.5em;
+}
+
 @media screen and (min-width: 576px) {
   .label {
     align-self: flex-start;
+    flex: 0 1 auto;
   }
 
   .home {
@@ -27,6 +34,10 @@
 
   .away {
     text-align: left;
+  }
+
+  .fieldDetail {
+    padding: 0 2em;
   }
 }
 
