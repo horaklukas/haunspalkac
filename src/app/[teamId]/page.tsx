@@ -16,6 +16,24 @@ async function getTeamDetail(teamId: string) {
   return teamData;
 }
 
+const ShirtColors = ({ colors }: { colors: string[] }) => {
+  return (
+    <svg viewBox="0 0 34 34" width="1.2em" height="1.2em">
+      <mask id="shirt-mask">
+        <circle cx="17" cy="17" r="16" fill="white" />
+      </mask>
+      <g mask="url(#shirt-mask)">
+        {colors.map((color, i) => {
+          const colorWidth = Math.round(32 / colors.length);
+
+          return <rect key={color} x={1 + (colorWidth * i)} y={1} height={32} width={colorWidth} fill={color} />
+        })}
+      </g>
+      <circle cx="17" cy="17" r="16" fill="none" stroke="white" strokeWidth="1" />
+    </svg>
+  )
+}
+
 type TeamDetailProps = {
   params: {
     teamId: string;
@@ -43,11 +61,21 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                   <small className="text-red-700 text-xs uppercase">{format(date, 'LLL yy', /* { locale: cs } */)}</small>
                 </span>
 
-                <span className="text-xl justify-self-end mr-3">{teams.home && allTeams.get(teams.home)?.label}</span>
+                <span className="text-xl justify-self-end mr-3 inline-flex gap-3">
+                  {teams.home.id && allTeams.get(teams.home.id)?.label}
+                  {teams.home.shirtColors && teams.home.shirtColors.length > 0 && (
+                    <ShirtColors colors={teams.home.shirtColors} />
+                  )}
+                </span>
                 <span className="text-sm text-slate-400">
                   {format(date, 'HH:mm',)}
                 </span>
-                <span className="text-xl ml-3">{teams.away && allTeams.get(teams.away)?.label}</span>
+                <span className="text-xl ml-3 inline-flex gap-3">
+                  {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
+                    <ShirtColors colors={teams.away.shirtColors} />
+                  )}
+                  {teams.away.id && allTeams.get(teams.away.id)?.label}
+                </span>
                 <span className="text-sm text-slate-400 justify-self-end ml-4">{field}</span>
               </Fragment>
             )

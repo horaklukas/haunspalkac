@@ -7,19 +7,86 @@ import { getPageTableData, getTeamIdFromPath, getText } from "./utils";
 import psmf from "./api";
 import { psmfPaths } from "./config";
 
+/*  mapping czech color names to english names */
+const colorsMap: Record<string, string> = {
+  červená: "red",
+  modrá: "blue",
+  zelená: "green",
+  žlutá: "yellow",
+  oranžová: "orange",
+  růžová: "pink",
+  fialová: "purple",
+  hnědá: "brown",
+  šedá: "gray",
+  bílá: "white",
+  černá: "black",
+  tyrkysová: "turquoise",
+  olivová: "olive",
+  stříbrná: "silver",
+  zlatá: "gold",
+  korálová: "coral",
+  malinová: "raspberry",
+  limetková: "lime green",
+  bežová: "beige",
+  safírová: "sapphire blue",
+  indigová: "indigo",
+  azurová: "azure",
+  kaštanová: "chestnut",
+  azalková: "azalea",
+  slonovinová: "ivory",
+  kašová: "khaki",
+  lavandová: "lavender",
+  malachitová: "malachite",
+  meruňková: "apricot",
+  "nebesky modrá": "sky blue",
+  okrová: "ochre",
+  terakotová: "terracotta",
+  vanilková: "vanilla",
+  béžová: "beige",
+  "černo-červená": "black-red",
+  "červeno-černá": "red-black",
+  "žluto-černá": "yellow-black",
+  "modro-černá": "blue-black",
+  "bílo-zelená": "white-green",
+  "tmavě modrá": "darkblue",
+  "světle modrá": "lightblue",
+};
+
 type Field = {
   label: string;
   path: string;
 };
 
+type MatchTeam = {
+  id?: string;
+  shirtColors?: string[] | null;
+};
+
 export interface MatchData {
   round: number;
-  teams: { home?: string; away?: string };
+  teams: { home: MatchTeam; away: MatchTeam };
   date: Date;
-  field: string // Field;
+  field: string; // Field;
 }
 
 export type MatchSchedule = MatchData[];
+
+const getShirtColors = (colors?: string) => {
+  if (!colors) {
+    return null;
+  }
+
+  const czColors = colors.split(", ");
+
+  return czColors.flatMap((czColor) => {
+    if (czColor in colorsMap) {
+      return colorsMap[czColor];
+    }
+    
+    console.log("Missing color", czColor);
+    return "unknown";
+  });
+};
 
 const getMatchDate = (
   timeColumn: cheerio.Element,
@@ -55,16 +122,21 @@ export const getTeamMatches = async (
 
   return getPageTableData($("table.games-new-table"), $).map((columns) => {
     const [$home, $away] = $(columns[3]).find('a[href^="/souteze/"]').toArray();
+    const [$shirtHome, $shirtAway] = $(columns[3])
+      .find("a.component__table-shirt")
+      .toArray();
 
     const home = getTeamIdFromPath($($home).attr("href"));
     const away = getTeamIdFromPath($($away).attr("href"));
+    const shirtHome = getShirtColors($($shirtHome).attr("title"));
+    const shirtAway = getShirtColors($($shirtAway).attr("title"));
 
     const matchDate = getMatchDate(columns[1], columns[0], $);
 
     return {
       teams: {
-        home: home?.trim(),
-        away: away?.trim(),
+        home: { id: home?.trim(), shirtColors: shirtHome },
+        away: { id: away?.trim(), shirtColors: shirtAway },
       },
       date: matchDate,
       field: getText(columns[2], $),
