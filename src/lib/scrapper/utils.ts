@@ -1,12 +1,17 @@
 import * as cheerio from "cheerio";
 
-export const getText = (element: cheerio.Element | string, $: cheerio.CheerioAPI) =>
-  $(element).text().trim();
+export const getText = (
+  element: cheerio.Element | string,
+  $: cheerio.CheerioAPI
+) => $(element).text().trim();
 
-export const getPageTableData = ($: cheerio.CheerioAPI) => {
-  const data = [];
+export const getPageTableData = (
+  $table: cheerio.Cheerio<cheerio.Element>,
+  $: cheerio.CheerioAPI
+) => {
+  const data: cheerio.Cheerio<cheerio.Element>[] = [];
 
-  $(".main-content table tr").each((_: number, row: cheerio.Element) => {
+  $("tr", $table).each((_: number, row: cheerio.Element) => {
     const columns = $(row).find("td");
 
     if (columns.length > 0) {
@@ -17,5 +22,6 @@ export const getPageTableData = ($: cheerio.CheerioAPI) => {
   return data;
 };
 
-export const leaguePathFromTeamPage = (teamPagePath: string) =>
-  teamPagePath.substr(0, teamPagePath.indexOf("tymy/"));
+export const getTeamIdFromPath = (path?: string) => {
+  return path?.split("/").filter(Boolean).at(-1);
+};

@@ -1,16 +1,22 @@
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import * as dateFns from "date-fns";
 import { cs } from "date-fns/locale";
 import { zonedTimeToUtc } from "date-fns-tz";
 
-import { getPageTableData, getText } from "./utils";
+import { getPageTableData, getTeamIdFromPath, getText } from "./utils";
 import psmf from "./api";
 import { psmfPaths } from "./config";
 
+type Field = {
+  label: string;
+  path: string;
+};
+
 export interface MatchData {
-  teams: { home: string; away: string };
-  date: string;
-  field: string;
+  round: number;
+  teams: { home?: string; away?: string };
+  date: Date;
+  field: string // Field;
 }
 
 export type MatchSchedule = MatchData[];
@@ -18,19 +24,18 @@ export type MatchSchedule = MatchData[];
 const getMatchDate = (
   timeColumn: cheerio.Element,
   dateColumn: cheerio.Element,
-  year: number,
-  $: cheerio.Root
+  $: cheerio.CheerioAPI
 ) => {
   const time = getText(timeColumn, $);
   const [hour, minute] = time.split(":");
 
-  const day = getText(dateColumn, $);
+  // First is date, we don't need it
+  const [, fullDate] = getText(dateColumn, $).split(/\s/);
 
-  const date: Date = dateFns.parse(day, "EEEEEE d.M.", new Date(), {
+  const date: Date = dateFns.parse(fullDate, "d.M.yy", new Date(), {
     locale: cs,
   });
 
-  date.setFullYear(year);
   date.setHours(Number(hour));
   date.setMinutes(Number(minute));
 
@@ -40,28 +45,30 @@ const getMatchDate = (
 export const getTeamMatches = async (
   teamPagePath: string
 ): Promise<MatchSchedule> => {
-  const response = await psmf.get(psmfPaths.matchSchedule(teamPagePath));
+  const response = await psmf.get(teamPagePath);
 
-  const html = response.data;
-  const $ = cheerio.load(html);
+  if (!response.ok) {
+    throw new Error("Couldn't get team detail page");
+  }
 
-  const titleText = getText("h1", $);
-  const [parsedYear] = titleText.match(/\d{4}/) ?? [];
-  // fallback to current year if there is some issue about parsing the year
-  const year = parsedYear ? Number(parsedYear) : new Date().getFullYear();
+  const $ = cheerio.load(await response.text());
 
-  return getPageTableData($).map((columns) => {
-    const [home, away] = $(columns[0]).text().split("–");
+  return getPageTableData($("table.games-new-table"), $).map((columns) => {
+    const [$home, $away] = $(columns[3]).find('a[href^="/souteze/"]').toArray();
 
-    const matchDate = getMatchDate(columns[2], columns[1], year, $);
+    const home = getTeamIdFromPath($($home).attr("href"));
+    const away = getTeamIdFromPath($($away).attr("href"));
+
+    const matchDate = getMatchDate(columns[1], columns[0], $);
 
     return {
       teams: {
         home: home?.trim(),
         away: away?.trim(),
       },
-      date: matchDate.toISOString(),
-      field: getText(columns[3], $),
+      date: matchDate,
+      field: getText(columns[2], $),
+      round: Number(getText(columns[4], $).slice(0, -1)),
     };
   });
 };

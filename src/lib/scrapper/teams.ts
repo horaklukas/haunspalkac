@@ -1,19 +1,18 @@
-import { orderBy, snakeCase } from "lodash";
+import { snakeCase } from "lodash";
 import * as cheerio from "cheerio";
-import { isAfter } from "date-fns";
 import NodeCache from "node-cache";
 
 import { MINUTE } from "../constants";
 import { psmfPaths } from "./config";
 import psmf from "./api";
 import { getTeamMatches } from "./matches";
-import { getPageTableData, getText, leaguePathFromTeamPage } from "./utils";
+import { getTeamIdFromPath, getText } from "./utils";
 
 const scrappedDataCache = new NodeCache();
 
-export interface TeamFormData {
+export interface TeamInfo {
   id: string;
-  href?: string;
+  urlPath?: string;
   label: string;
 }
 
@@ -77,7 +76,7 @@ export const getTeamPagePath = async (teamName: string) => {
 const getCurrentSeason = async () => {
   const response = await psmf.get(psmfPaths.seasons);
 
-  if (response.status >= 300) {
+  if (!response.ok) {
     throw new Error("Couldn't get list of seasons");
   }
 
@@ -118,7 +117,7 @@ const getLeagues = async () => {
     .flat();
 };
 
-export type TeamDataMap = Map<string, TeamFormData>;
+export type TeamDataMap = Map<string, TeamInfo>;
 
 export const getTeams = async (): Promise<TeamDataMap> => {
   let teams = scrappedDataCache.get<TeamDataMap>("teams");
@@ -142,8 +141,8 @@ export const getTeams = async (): Promise<TeamDataMap> => {
       })
     );
 
-    teams = new Map<string, TeamFormData>();
-    const teamsList = response
+    teams = new Map<string, TeamInfo>();
+    response
       .filter(({ status }) => status === "fulfilled")
       .forEach(({ value }) => {
         const $ = cheerio.load(value);
@@ -153,11 +152,11 @@ export const getTeams = async (): Promise<TeamDataMap> => {
 
         $teams.each((index: number, link: cheerio.Element) => {
           const href = $(link).attr("href");
-          const id = href?.split("/").filter(Boolean).at(-1) ?? `${index}`;
+          const id = (getTeamIdFromPath(href)) ?? `${index}`;
 
           teams!.set(id, {
             id,
-            href,
+            urlPath: href,
             label: getText(link, $),
           });
         });
@@ -176,19 +175,19 @@ export const getTeamName = async (teamId: string) => {
 };
 
 export const getTeamData = async (teamId: string) => {
-  const team = await getTeamName(teamId);
+  const teams = await getTeams();
 
-  const path = await getTeamPagePath(team);
-  const matches = await getTeamMatches(path);
+  const team = teams.get(teamId);
 
-  const nowDate = new Date();
-  const schedule = matches.filter((match) =>
-    isAfter(new Date(match.date), nowDate)
-  );
+  if (!team || !team.urlPath) {
+    return null;
+  }
+
+  const { urlPath } = team;
+  const matches = await getTeamMatches(urlPath);
 
   return {
     team,
-    web: path,
-    schedule,
+    matches
   };
 };
