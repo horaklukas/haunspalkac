@@ -5,7 +5,6 @@ import { zonedTimeToUtc } from "date-fns-tz";
 
 import { getPageTableData, getTeamIdFromPath, getText } from "./utils";
 import psmf from "./api";
-import { psmfPaths } from "./config";
 
 /*  mapping czech color names to english names */
 const colorsMap: Record<string, string> = {
@@ -71,6 +70,15 @@ export interface MatchData {
 
 export type MatchSchedule = MatchData[];
 
+const getColorFromCzName = (czColor: string) => {
+  if (czColor in colorsMap) {
+    return colorsMap[czColor];
+  }
+
+  console.log("Missing color", czColor);
+  return "unknown";
+};
+
 const getShirtColors = (colors?: string) => {
   if (!colors) {
     return null;
@@ -79,12 +87,16 @@ const getShirtColors = (colors?: string) => {
   const czColors = colors.split(", ");
 
   return czColors.flatMap((czColor) => {
-    if (czColor in colorsMap) {
-      return colorsMap[czColor];
+    if (czColor.includes("-")) {
+      const [first, secondColor] = czColor.split("-");
+      // convert color name like "černo" to "černá"
+      const firstColor = first.charAt(first.length - 1) === "o" ? `${first.slice(0, -1)}á`  : first;
+      
+      return [getColorFromCzName(firstColor), getColorFromCzName(secondColor)];
     }
-    
-    console.log("Missing color", czColor);
-    return "unknown";
+
+
+    return getColorFromCzName(czColor);
   });
 };
 
