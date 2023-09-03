@@ -9,6 +9,8 @@ import { /* isBefore, */ format } from "date-fns";
 import { TeamDataMap, TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
 import { getFullPsmfUrl } from "@/lib/scrapper/utils";
 import { AddToCalendarButton } from "@/components/AddToCalendarButton";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 async function getTeamDetail(teamId: string) {
   const teamData = await getTeamData(teamId);
@@ -65,6 +67,11 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-12">
+      <Link href="/" passHref>
+        <Button variant="outline" size="sm" className="absolute top-3 left-5 text-xs">
+          🙎 Select other team
+        </Button>
+      </Link>
       <Suspense fallback={<div>Loading team matches...</div>}>
         <header className="flex mb-5">
           <h1 className="text-2xl">{team.label}</h1>
@@ -82,7 +89,7 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
 
             return (
               <Fragment key={date.toString()} >
-                <span className="text-sm text-slate-400 justify-self-end">{round}.</span>
+                <span className="text-sm text-slate-400 justify-self-end" id={`round-${round}`}>{round}.</span>
                 <span className="inline-flex flex-col justify-between shrink-0 grow-0 w-14 h-14 bg-slate-300 text-black rounded text-center overflow-hidden pb-1">
                   <span className="inline-block bg-red-700 h-2 w-full"></span>
                   <strong className="text-lg">{date.getDate()}</strong>
