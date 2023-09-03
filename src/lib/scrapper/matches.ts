@@ -1,3 +1,4 @@
+import NodeCache from "node-cache";
 import * as cheerio from "cheerio";
 import * as dateFns from "date-fns";
 import { cs } from "date-fns/locale";
@@ -5,6 +6,10 @@ import { zonedTimeToUtc } from "date-fns-tz";
 
 import { getPageTableData, getTeamIdFromPath, getText } from "./utils";
 import psmf from "./api";
+import { snakeCase } from "lodash";
+import { MINUTE } from "../constants";
+
+const scrappedDataCache = new NodeCache();
 
 /*  mapping czech color names to english names */
 const colorsMap: Record<string, string> = {
@@ -90,11 +95,13 @@ const getShirtColors = (colors?: string) => {
     if (czColor.includes("-")) {
       const [first, secondColor] = czColor.split("-");
       // convert color name like "černo" to "černá"
-      const firstColor = first.charAt(first.length - 1) === "o" ? `${first.slice(0, -1)}á`  : first;
-      
+      const firstColor =
+        first.charAt(first.length - 1) === "o"
+          ? `${first.slice(0, -1)}á`
+          : first;
+
       return [getColorFromCzName(firstColor), getColorFromCzName(secondColor)];
     }
-
 
     return getColorFromCzName(czColor);
   });
@@ -124,35 +131,48 @@ const getMatchDate = (
 export const getTeamMatches = async (
   teamPagePath: string
 ): Promise<MatchSchedule> => {
-  const response = await psmf.get(teamPagePath);
+  const cacheKey = `teams.${snakeCase(teamPagePath)}`;
+  let matchSchedule = scrappedDataCache.get<MatchSchedule>(cacheKey);
 
-  if (!response.ok) {
-    throw new Error("Couldn't get team detail page");
+  if (!matchSchedule) {
+    const response = await psmf.get(teamPagePath);
+
+    if (!response.ok) {
+      throw new Error("Couldn't get team detail page");
+    }
+
+    const $ = cheerio.load(await response.text());
+
+    matchSchedule = getPageTableData($("table.games-new-table"), $).map(
+      (columns) => {
+        const [$home, $away] = $(columns[3])
+          .find('a[href^="/souteze/"]')
+          .toArray();
+        const [$shirtHome, $shirtAway] = $(columns[3])
+          .find("a.component__table-shirt")
+          .toArray();
+
+        const home = getTeamIdFromPath($($home).attr("href"));
+        const away = getTeamIdFromPath($($away).attr("href"));
+        const shirtHome = getShirtColors($($shirtHome).attr("title"));
+        const shirtAway = getShirtColors($($shirtAway).attr("title"));
+
+        const matchDate = getMatchDate(columns[1], columns[0], $);
+
+        return {
+          teams: {
+            home: { id: home?.trim(), shirtColors: shirtHome },
+            away: { id: away?.trim(), shirtColors: shirtAway },
+          },
+          date: matchDate,
+          field: getText(columns[2], $),
+          round: Number(getText(columns[4], $).slice(0, -1)),
+        };
+      }
+    );
+
+    scrappedDataCache.set(cacheKey, matchSchedule, 24 * 60 * MINUTE);
   }
 
-  const $ = cheerio.load(await response.text());
-
-  return getPageTableData($("table.games-new-table"), $).map((columns) => {
-    const [$home, $away] = $(columns[3]).find('a[href^="/souteze/"]').toArray();
-    const [$shirtHome, $shirtAway] = $(columns[3])
-      .find("a.component__table-shirt")
-      .toArray();
-
-    const home = getTeamIdFromPath($($home).attr("href"));
-    const away = getTeamIdFromPath($($away).attr("href"));
-    const shirtHome = getShirtColors($($shirtHome).attr("title"));
-    const shirtAway = getShirtColors($($shirtAway).attr("title"));
-
-    const matchDate = getMatchDate(columns[1], columns[0], $);
-
-    return {
-      teams: {
-        home: { id: home?.trim(), shirtColors: shirtHome },
-        away: { id: away?.trim(), shirtColors: shirtAway },
-      },
-      date: matchDate,
-      field: getText(columns[2], $),
-      round: Number(getText(columns[4], $).slice(0, -1)),
-    };
-  });
+  return matchSchedule;
 };
