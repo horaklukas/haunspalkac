@@ -4,8 +4,11 @@ import { /* isBefore, */ format } from "date-fns";
 // import clsx from "clsx";
 // import { cs } from "date-fns/locale";
 
+
+
 import { TeamDataMap, TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
 import { getFullPsmfUrl } from "@/lib/scrapper/utils";
+import { AddToCalendarButton } from "@/components/AddToCalendarButton";
 
 async function getTeamDetail(teamId: string) {
   const teamData = await getTeamData(teamId);
@@ -27,7 +30,7 @@ const ShirtColors = ({ colors }: { colors: string[] }) => {
         {colors.map((color, i) => {
           const colorWidth = Math.round(32 / colors.length);
 
-          return <rect key={color} x={1 + (colorWidth * i)} y={1} height={32} width={colorWidth} fill={color} />
+          return <rect key={color + i.toString()} x={1 + (colorWidth * i)} y={1} height={32} width={colorWidth} fill={color} />
         })}
       </g>
       <circle cx="17" cy="17" r="16" fill="none" stroke="white" strokeWidth="1" />
@@ -63,10 +66,20 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-12">
       <Suspense fallback={<div>Loading team matches...</div>}>
-        <h1 className="text-2xl mb-5">{team.label}</h1>
-        <div className="grid items-center gap-4" style={{ gridTemplateColumns: 'auto auto minmax(0, 1fr) auto minmax(0, 1fr) auto' }}>
+        <header className="flex mb-5">
+          <h1 className="text-2xl">{team.label}</h1>
+          {/* <AddToCalendarButton matches={matches} /> */}
+        </header>
+
+        <section
+          className="grid items-center gap-4"
+          style={{ gridTemplateColumns: 'auto auto minmax(0, 1fr) auto minmax(0, 1fr) auto auto' }}
+        >
           {matches.map(({ date, teams, round, field }) => {
             // const isInPast = isBefore(date, nowDate)
+            const homeTeam = allTeams.get(teams.home.id ?? '')
+            const awayTeam = allTeams.get(teams.away.id ?? '')
+
             return (
               <Fragment key={date.toString()} >
                 <span className="text-sm text-slate-400 justify-self-end">{round}.</span>
@@ -77,7 +90,7 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                 </span>
 
                 <span className="justify-self-end mr-3 inline-flex gap-3">
-                  <TeamName team={allTeams.get(teams.home.id ?? '')} />
+                  <TeamName team={homeTeam} />
                   {teams.home.shirtColors && teams.home.shirtColors.length > 0 && (
                     <ShirtColors colors={teams.home.shirtColors} />
                   )}
@@ -89,13 +102,23 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                   {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
                     <ShirtColors colors={teams.away.shirtColors} />
                   )}
-                  <TeamName team={allTeams.get(teams.away.id ?? '')} />
+                  <TeamName team={awayTeam} />
                 </span>
                 <span className="text-sm text-slate-400 justify-self-end ml-4">{field}</span>
+
+                {homeTeam && awayTeam && (
+                  <AddToCalendarButton
+                    homeTeam={homeTeam}
+                    awayTeam={awayTeam}
+                    round={round}
+                    date={date}
+                    location={field}
+                  />
+                )}
               </Fragment>
             )
           })}
-        </div>
+        </section>
 
       </Suspense>
     </main>
