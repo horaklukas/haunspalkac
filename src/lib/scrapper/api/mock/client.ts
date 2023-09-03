@@ -7,17 +7,12 @@ import {
   meteField,
   mikuField,
 } from "../../__tests__/fields.fixtures";
-import { matchesPage } from "../../__tests__/matches.fixtures";
 import {
-  leaguePagePath,
-  leagueTablePage,
   teamPage,
   teamPagePath,
 } from "../../__tests__/teams.fixtures";
 import {
-  createFakeResponse,
   createFakeHTMLResponse,
-  delay,
   createFakeJsonScriptDataResponse,
 } from "./utils";
 
@@ -37,16 +32,6 @@ const mockClient = {
 
     if (path === psmfPaths.search) {
       return createFakeHTMLResponse(teamPage, teamPagePath);
-    }
-
-    if (path === psmfPaths.matchSchedule(teamPagePath)) {
-      delay(5000);
-      return createFakeHTMLResponse(matchesPage);
-    }
-
-    if (path === psmfPaths.currentTable(leaguePagePath)) {
-      delay(2000);
-      return createFakeHTMLResponse(leagueTablePage);
     }
 
     if (path === psmfPaths.teamsScript) {

@@ -26,54 +26,6 @@ jest.mock("../api", () => ({
 }));
 
 describe("Teams", () => {
-  describe("getTeamPagePath", () => {
-    beforeEach(() => {
-      (psmf.get as jest.Mock).mockReset();
-    });
-
-    it("should return path when team title found in main content", async () => {
-      const html = teamPage;
-      const team = `Viktoria Bítovská A`;
-      const expectedPath = teamPagePath;
-
-      expect.assertions(1);
-
-      when(psmf.get)
-        .calledWith(psmfPaths.search, { params: { query: team } })
-        .mockResolvedValue(createFakeHTMLResponse(html, expectedPath));
-
-      await expect(getTeamPagePath(team)).resolves.toEqual(expectedPath);
-    });
-
-    it("should find path from link when ambiguous results returned", async () => {
-      const html = crossroadPage;
-      const team = `Pražská eS`;
-      const expectedPath = crossroadTeamPath;
-
-      expect.assertions(1);
-
-      when(psmf.get)
-        .calledWith(psmfPaths.search, { params: { query: team } })
-        .mockResolvedValue(createFakeHTMLResponse(html, expectedPath));
-
-      await expect(getTeamPagePath(team)).resolves.toEqual(expectedPath);
-    });
-
-    it("should throw when correct team path not found", async () => {
-      const html = ``;
-      const team = `pražskáEs`;
-
-      expect.assertions(1);
-
-      when(psmf.get)
-        .calledWith(psmfPaths.search, { params: { query: team } })
-        .mockResolvedValue(createFakeHTMLResponse(html));
-
-      await expect(getTeamPagePath(team)).rejects.toThrow(
-        `Coulnd't get team page path`
-      );
-    });
-  });
 
   describe("getLeagueTeamsStatistics", () => {
     beforeEach(() => {

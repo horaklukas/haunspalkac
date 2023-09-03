@@ -10,7 +10,8 @@ const psmfClient = {
 
 const psmf = {
   get: (path: string, params?: any) => {
-    const client = useMockApi ? mockClient : psmfClient;
+    // const client = useMockApi ? mockClient : psmfClient;
+    const client = psmfClient;
 
     return client.get(path, params);
   },

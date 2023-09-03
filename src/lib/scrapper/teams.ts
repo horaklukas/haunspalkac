@@ -27,52 +27,6 @@ export interface TeamStatistic {
   points: number;
 }
 
-const searchTeamPath = async (teamName: string) => {
-  const response = await psmf.get(psmfPaths.search, {
-    params: {
-      query: teamName,
-    },
-  });
-
-  const html = response.data;
-  const $ = cheerio.load(html);
-
-  const teamTitle = $(`h2`).filter(
-    (_: number, title: cheerio.Element) =>
-      $(title).text().trim() === `Tým ${teamName}`
-  );
-
-  if (teamTitle.length) {
-    return response.request.path;
-  }
-
-  const link = $(".main-content a").filter(
-    (_: number, link: cheerio.Element) => {
-      const href = $(link).attr("href");
-      return href !== undefined && href.includes("hanspaulska-liga");
-    }
-  );
-
-  if (link.length === 1) {
-    return $(link).attr("href");
-  }
-
-  throw new Error("Coulnd't get team page path");
-};
-
-export const getTeamPagePath = async (teamName: string) => {
-  const cacheKey = `teams.${snakeCase(teamName)}`;
-  let teamPagePath = scrappedDataCache.get<string>(cacheKey);
-
-  if (!teamPagePath) {
-    teamPagePath = await searchTeamPath(teamName);
-
-    scrappedDataCache.set(cacheKey, teamPagePath, 24 * 60 * MINUTE);
-  }
-
-  return teamPagePath;
-};
-
 const getCurrentSeason = async () => {
   const response = await psmf.get(psmfPaths.seasons);
 
@@ -142,36 +96,31 @@ export const getTeams = async (): Promise<TeamDataMap> => {
     );
 
     teams = new Map<string, TeamInfo>();
-    response
-      .filter(({ status }) => status === "fulfilled")
-      .forEach(({ value }) => {
-        const $ = cheerio.load(value);
-        const $teams = $('.component__title:contains("Tabulky")')
-          .next(".ci-tables")
-          .find("td a");
 
-        $teams.each((index: number, link: cheerio.Element) => {
-          const href = $(link).attr("href");
-          const id = (getTeamIdFromPath(href)) ?? `${index}`;
+    for (const leaguePagePromise of response) {
+      if (leaguePagePromise.status !== "fulfilled") {
+        continue;
+      }
 
-          teams!.set(id, {
-            id,
-            urlPath: href,
-            label: getText(link, $),
-          });
+      const $ = cheerio.load(leaguePagePromise.value);
+      const $teams = $('.component__title:contains("Tabulky")')
+        .next(".ci-tables")
+        .find("td a");
+
+      $teams.each((index: number, link: cheerio.Element) => {
+        const href = $(link).attr("href");
+        const id = getTeamIdFromPath(href) ?? `${index}`;
+
+        teams!.set(id, {
+          id,
+          urlPath: href,
+          label: getText(link, $),
         });
       });
+    }
   }
 
   return teams;
-};
-
-export const getTeamName = async (teamId: string) => {
-  const teams = await getTeams();
-
-  const team = teams.find(({ id }) => id === teamId);
-
-  return team?.label ?? null;
 };
 
 export const getTeamData = async (teamId: string) => {
@@ -188,6 +137,6 @@ export const getTeamData = async (teamId: string) => {
 
   return {
     team,
-    matches
+    matches,
   };
 };

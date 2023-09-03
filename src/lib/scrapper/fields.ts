@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import { getPageTableData, getText } from "./utils";
 import psmf from "./api";
 import { trim } from "lodash";
@@ -11,9 +11,9 @@ export interface FieldData {
   link: string;
 }
 
-const parseFieldData = (
+/* const parseFieldData = (
   firstColumn: cheerio.Element,
-  $: cheerio.Root
+  $: cheerio.CheerioAPI
 ): Pick<FieldData, "abbr" | "link">[] => {
   const firstColumnText = getText(firstColumn, $);
 
@@ -104,3 +104,4 @@ export const getFieldsById = async () => {
 
   return fieldsByAbbr;
 };
+ */

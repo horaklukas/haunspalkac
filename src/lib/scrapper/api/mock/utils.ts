@@ -1,4 +1,3 @@
-import type { AxiosResponse } from "axios";
 import { delay as lodashDelay } from "lodash";
 
 export function createFakeResponse(data: string, path?: string) {
@@ -7,7 +6,7 @@ export function createFakeResponse(data: string, path?: string) {
     request: {
       path,
     },
-  } as AxiosResponse;
+  };
 }
 
 export function createFakeHTMLResponse(html: string, path?: string) {
