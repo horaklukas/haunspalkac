@@ -1,0 +1,38 @@
+.buttonWrapper {
+  text-align: center;
+}
+
+.icon {
+  background: transparent !important;
+}
+
+.info {
+  max-height: 2.7em;
+  overflow: hidden;
+  position: relative;
+
+  cursor: pointer;
+
+  transition: max-height 0.5s ease-in-out;
+}
+
+.expanded {
+  max-height: 500px;
+}
+
+.info::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  background-image: linear-gradient(rgba(255, 255, 255, 0), rgb(255, 255, 255));
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.expanded:after {
+  opacity: 0;
+}

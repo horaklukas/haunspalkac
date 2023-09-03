@@ -1,0 +1,8 @@
+.statistic {
+  display: inline-flex;
+  gap: 0.8em;
+}
+
+.icon {
+  margin-right: 0.15rem !important;
+}
