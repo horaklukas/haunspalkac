@@ -1,11 +1,10 @@
 import mockClient from "./mock/client";
-import { PSMF_URL, useMockApi } from "../config";
+import {  useMockApi } from "../config";
+import { getFullPsmfUrl } from "../utils";
 
 const psmfClient = {
   get(path: string, params?: RequestInit) {
-    const url = new URL(path, PSMF_URL);
-
-    return fetch(url, params);
+    return fetch(getFullPsmfUrl(path), params);
   },
 };
 

@@ -4,7 +4,8 @@ import { /* isBefore, */ format } from "date-fns";
 // import clsx from "clsx";
 // import { cs } from "date-fns/locale";
 
-import { getTeamData, getTeams } from "@/lib/scrapper";
+import { TeamDataMap, TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
+import { getFullPsmfUrl } from "@/lib/scrapper/utils";
 
 async function getTeamDetail(teamId: string) {
   const teamData = await getTeamData(teamId);
@@ -31,6 +32,20 @@ const ShirtColors = ({ colors }: { colors: string[] }) => {
       </g>
       <circle cx="17" cy="17" r="16" fill="none" stroke="white" strokeWidth="1" />
     </svg>
+  )
+}
+
+const TeamName = ({ team }: { team?: TeamInfo }) => {
+  if (!team) {
+    return null
+  }
+
+  const { urlPath, label } = team
+
+  return (
+    <a className="text-xl" href={urlPath ? getFullPsmfUrl(urlPath).toString() : '#'} target="_blank" rel="noopener noreferrer">
+      {label}
+    </a >
   )
 }
 
@@ -61,8 +76,8 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                   <small className="text-red-700 text-xs uppercase">{format(date, 'LLL yy', /* { locale: cs } */)}</small>
                 </span>
 
-                <span className="text-xl justify-self-end mr-3 inline-flex gap-3">
-                  {teams.home.id && allTeams.get(teams.home.id)?.label}
+                <span className="justify-self-end mr-3 inline-flex gap-3">
+                  <TeamName team={allTeams.get(teams.home.id ?? '')} />
                   {teams.home.shirtColors && teams.home.shirtColors.length > 0 && (
                     <ShirtColors colors={teams.home.shirtColors} />
                   )}
@@ -70,11 +85,11 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                 <span className="text-sm text-slate-400">
                   {format(date, 'HH:mm',)}
                 </span>
-                <span className="text-xl ml-3 inline-flex gap-3">
+                <span className="ml-3 inline-flex gap-3">
                   {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
                     <ShirtColors colors={teams.away.shirtColors} />
                   )}
-                  {teams.away.id && allTeams.get(teams.away.id)?.label}
+                  <TeamName team={allTeams.get(teams.away.id ?? '')} />
                 </span>
                 <span className="text-sm text-slate-400 justify-self-end ml-4">{field}</span>
               </Fragment>

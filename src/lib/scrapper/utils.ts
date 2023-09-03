@@ -1,4 +1,5 @@
 import * as cheerio from "cheerio";
+import { PSMF_URL } from "./config";
 
 export const getText = (
   element: cheerio.Element | string,
@@ -24,4 +25,8 @@ export const getPageTableData = (
 
 export const getTeamIdFromPath = (path?: string) => {
   return path?.split("/").filter(Boolean).at(-1);
+};
+
+export const getFullPsmfUrl = (path: string) => {
+  return new URL(path, PSMF_URL);
 };
