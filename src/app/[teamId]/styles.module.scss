@@ -1,0 +1,29 @@
+.schedule {
+    grid-template-columns: auto minmax(0, 3fr) auto auto;
+
+    @media (min-width: 768px) {
+        grid-template-columns: auto auto minmax(0, 3fr) auto auto;
+    }
+}
+
+.teams {
+    @media (max-width: 768px) {
+        grid-column: 2 / span 3;
+    }
+    
+    @media (min-width: 768px) {
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+}
+
+.field {
+    @media (max-width: 768px) {
+        grid-column: 1 / span 3;
+    }
+}
+
+.separator {
+    @media (max-width: 768px) {
+        grid-column: 1 / span 4;
+    }
+}

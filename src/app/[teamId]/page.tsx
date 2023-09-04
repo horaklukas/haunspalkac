@@ -12,6 +12,8 @@ import { AddToCalendarButton } from "@/components/AddToCalendarButton";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
+import styles from './styles.module.scss'
+
 async function getTeamDetail(teamId: string) {
   const teamData = await getTeamData(teamId);
 
@@ -66,22 +68,19 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
   const nowDate = new Date();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-12">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-5 pt-14 md:p-12">
       <Link href="/" passHref>
         <Button variant="outline" size="sm" className="absolute top-3 left-5 text-xs">
           🙎 Select other team
         </Button>
       </Link>
       <Suspense fallback={<div>Loading team matches...</div>}>
-        <header className="flex mb-5">
+        <header className="flex mb-5 border-b border-white">
           <h1 className="text-2xl">{team.label}</h1>
           {/* <AddToCalendarButton matches={matches} /> */}
         </header>
 
-        <section
-          className="grid items-center gap-4"
-          style={{ gridTemplateColumns: 'auto auto minmax(0, 1fr) auto minmax(0, 1fr) auto auto' }}
-        >
+        <section className={`grid items-center w-full gap-x-5 gap-y-2 md:gap-y-4 md:w-auto ${styles.schedule}`}>
           {matches.map(({ date, teams, round, field }) => {
             // const isInPast = isBefore(date, nowDate)
             const homeTeam = allTeams.get(teams.home.id ?? '')
@@ -89,29 +88,33 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
 
             return (
               <Fragment key={date.toString()} >
-                <span className="text-sm text-slate-400 justify-self-end" id={`round-${round}`}>{round}.</span>
-                <span className="inline-flex flex-col justify-between shrink-0 grow-0 w-14 h-14 bg-slate-300 text-black rounded text-center overflow-hidden pb-1">
+                <span className="text-sm text-slate-400 justify-self-end hidden md:block" id={`round-${round}`}>{round}.</span>
+                
+                <span className="inline-flex flex-col justify-between shrink-0 grow-0 w-14 h-14 ml-1 bg-slate-300 text-black rounded text-center overflow-hidden pb-1">
                   <span className="inline-block bg-red-700 h-2 w-full"></span>
                   <strong className="text-lg">{date.getDate()}</strong>
                   <small className="text-red-700 text-xs uppercase">{format(date, 'LLL yy', /* { locale: cs } */)}</small>
                 </span>
 
-                <span className="justify-self-end mr-3 inline-flex gap-3">
-                  <TeamName team={homeTeam} />
-                  {teams.home.shirtColors && teams.home.shirtColors.length > 0 && (
-                    <ShirtColors colors={teams.home.shirtColors} />
-                  )}
-                </span>
-                <span className="text-sm text-slate-400">
-                  {format(date, 'HH:mm',)}
-                </span>
-                <span className="ml-3 inline-flex gap-3">
-                  {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
-                    <ShirtColors colors={teams.away.shirtColors} />
-                  )}
-                  <TeamName team={awayTeam} />
-                </span>
-                <span className="text-sm text-slate-400 justify-self-end ml-4">{field}</span>
+                <div className={`flex flex-col gap-y-1 md:grid ${styles.teams}`}>
+                  <span className="inline-flex gap-3 items-center md:flex-row-reverse md:mr-3 md:justify-self-end">
+                    {teams.home.shirtColors && teams.home.shirtColors.length > 0 && (
+                      <ShirtColors colors={teams.home.shirtColors} />
+                    )}
+                    <TeamName team={homeTeam} />
+                  </span>
+                  <span className="text-sm text-slate-400">
+                    {format(date, 'HH:mm',)}
+                  </span>
+                  <span className="inline-flex gap-3 items-center md:ml-3">
+                    {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
+                      <ShirtColors colors={teams.away.shirtColors} />
+                    )}
+                    <TeamName team={awayTeam} />
+                  </span>
+                </div>
+
+                <span className={`text-sm text-slate-400 ml-1 md:justify-self-end md:ml-4 ${styles.field}`}>{field}</span>
 
                 {homeTeam && awayTeam && (
                   <AddToCalendarButton
@@ -122,6 +125,8 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                     location={field}
                   />
                 )}
+
+                <hr className={`col-span-full border-t border-slate-400 mt-1 mb-5 md:hidden ${styles.separator}`} />
               </Fragment>
             )
           })}
