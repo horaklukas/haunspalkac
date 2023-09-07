@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { TeamDataMap } from "@/lib/scrapper";
-import { orderBy } from "lodash";
+import orderBy from "lodash/orderBy";
 
 type TeamSelectProps = {
   teams: TeamDataMap;

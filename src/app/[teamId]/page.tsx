@@ -1,6 +1,6 @@
 import { Fragment, Suspense } from "react";
 import { notFound } from "next/navigation";
-import { /* isBefore, */ format } from "date-fns";
+import { isBefore, format } from "date-fns";
 // import clsx from "clsx";
 // import { cs } from "date-fns/locale";
 
@@ -13,6 +13,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 import styles from './styles.module.scss'
+import { partition } from "lodash";
 
 async function getTeamDetail(teamId: string) {
   const teamData = await getTeamData(teamId);
@@ -66,6 +67,8 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
   const { team, matches } = await getTeamDetail(params.teamId);
   const allTeams = await getTeams()
   const nowDate = new Date();
+  const [pastMatches, futureMatches] = partition(matches, ({ date }) => isBefore(date, nowDate))
+
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-5 pt-14 md:p-12">
@@ -80,16 +83,24 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
           {/* <AddToCalendarButton matches={matches} /> */}
         </header>
 
+
+        {pastMatches.length > 0 && (
+          <p className={`text-slate-500 text-xs text-center`}>
+            {pastMatches.length === 1 ?
+              `There is ${pastMatches.length} past match.` :
+              `There are ${pastMatches.length} past matches.`
+            }
+          </p>
+        )}
         <section className={`grid items-center w-full gap-x-5 gap-y-2 md:gap-y-4 md:w-auto ${styles.schedule}`}>
-          {matches.map(({ date, teams, round, field }) => {
-            // const isInPast = isBefore(date, nowDate)
+          {futureMatches.map(({ date, teams, round, field }) => {
             const homeTeam = allTeams.get(teams.home.id ?? '')
             const awayTeam = allTeams.get(teams.away.id ?? '')
 
             return (
               <Fragment key={date.toString()} >
                 <span className="text-sm text-slate-400 justify-self-end hidden md:block" id={`round-${round}`}>{round}.</span>
-                
+
                 <span className="inline-flex flex-col justify-between shrink-0 grow-0 w-14 h-14 ml-1 bg-slate-300 text-black rounded text-center overflow-hidden pb-1">
                   <span className="inline-block bg-red-700 h-2 w-full"></span>
                   <strong className="text-lg">{date.getDate()}</strong>
