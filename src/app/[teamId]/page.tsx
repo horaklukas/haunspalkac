@@ -43,6 +43,8 @@ const ShirtColors = ({ colors }: { colors: string[] }) => {
   )
 }
 
+const getTeamUrl = (urlPath?: string) => urlPath ? getFullPsmfUrl(urlPath).toString() : ''
+
 const TeamName = ({ team }: { team?: TeamInfo }) => {
   if (!team) {
     return null
@@ -51,7 +53,7 @@ const TeamName = ({ team }: { team?: TeamInfo }) => {
   const { urlPath, label } = team
 
   return (
-    <a className="text-xl" href={urlPath ? getFullPsmfUrl(urlPath).toString() : '#'} target="_blank" rel="noopener noreferrer">
+    <a className="text-xl" href={getTeamUrl(urlPath)} target="_blank" rel="noopener noreferrer">
       {label}
     </a >
   )
@@ -79,8 +81,9 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
       </Link>
       <Suspense fallback={<div>Loading team matches...</div>}>
         <header className="flex mb-5 border-b border-white">
-          <h1 className="text-2xl">{team.label}</h1>
-          {/* <AddToCalendarButton matches={matches} /> */}
+          <h1 className="text-2xl">
+            <a href={getTeamUrl(team.urlPath)} target="_blank">{team.label}</a>
+          </h1>
         </header>
 
 
