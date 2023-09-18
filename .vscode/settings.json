@@ -1,0 +1,5 @@
+{
+    "conventionalCommits.emojiFormat": "emoji",
+    "conventionalCommits.promptFooter": false,
+    "conventionalCommits.promptBody": false
+}
