@@ -2,11 +2,9 @@ import { Fragment, Suspense } from "react";
 import { notFound } from "next/navigation";
 import { isBefore, format } from "date-fns";
 // import clsx from "clsx";
-// import { cs } from "date-fns/locale";
+import { cs } from "date-fns/locale";
 
-
-
-import { TeamDataMap, TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
+import {  TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
 import { getFullPsmfUrl } from "@/lib/scrapper/utils";
 import { AddToCalendarButton } from "@/components/AddToCalendarButton";
 import Link from "next/link";
@@ -73,9 +71,9 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
 
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-5 pt-14 md:p-12">
+    <main className="flex flex-col items-center justify-center min-h-screen gap-3 p-5 pt-14 md:p-12">
       <Link href="/" passHref>
-        <Button variant="outline" size="sm" className="absolute top-3 left-5 text-xs">
+        <Button variant="outline" size="sm" className="absolute text-xs top-3 left-5">
           🙎 Select other team
         </Button>
       </Link>
@@ -102,16 +100,16 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
 
             return (
               <Fragment key={date.toString()} >
-                <span className="text-sm text-slate-400 justify-self-end hidden md:block" id={`round-${round}`}>{round}.</span>
+                <span className="hidden text-sm text-slate-400 justify-self-end md:block" id={`round-${round}`}>{round}.</span>
 
-                <span className="inline-flex flex-col justify-between shrink-0 grow-0 w-14 h-14 ml-1 bg-slate-300 text-black rounded text-center overflow-hidden pb-1">
-                  <span className="inline-block bg-red-700 h-2 w-full"></span>
+                <span className="inline-flex flex-col justify-between pb-1 ml-1 overflow-hidden text-center text-black rounded shrink-0 grow-0 w-14 h-14 bg-slate-300">
+                  <span className="inline-block w-full h-2 bg-red-700"></span>
                   <strong className="text-lg">{date.getDate()}</strong>
-                  <small className="text-red-700 text-xs uppercase">{format(date, 'LLL yy', /* { locale: cs } */)}</small>
+                  <small className="text-xs text-red-700 uppercase">{format(date, 'LLL yy', { locale: cs })}</small>
                 </span>
 
                 <div className={`flex flex-col gap-y-1 md:grid ${styles.teams}`}>
-                  <span className="inline-flex gap-3 items-center md:flex-row-reverse md:mr-3 md:justify-self-end">
+                  <span className="inline-flex items-center gap-3 md:flex-row-reverse md:mr-3 md:justify-self-end">
                     {teams.home.shirtColors && teams.home.shirtColors.length > 0 && (
                       <ShirtColors colors={teams.home.shirtColors} />
                     )}
@@ -120,7 +118,7 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
                   <span className="text-sm text-slate-400">
                     {format(date, 'HH:mm',)}
                   </span>
-                  <span className="inline-flex gap-3 items-center md:ml-3">
+                  <span className="inline-flex items-center gap-3 md:ml-3">
                     {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
                       <ShirtColors colors={teams.away.shirtColors} />
                     )}
