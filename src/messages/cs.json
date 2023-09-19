@@ -1,4 +1,10 @@
 {
+  "app": {
+    "seo": {
+      "title": "Haunspalkáč",
+      "description": "Zápasy Haunspalky přehledně a s exportem do kalendáře"
+    }
+  },
   "error": {
     "general": "Něco se pokazilo. Zkuste to znovu později.",
     "teamNotFound": "Detail týmu nenalezen, zkuste tým <searchLink>vyhledat znovu</searchLink>"
@@ -15,6 +21,10 @@
   "team": {
     "loading": "Načítám detail týmu...",
     "selectOther": "Vybrat jiný tým",
-    "pastMatches": "Již {count, plural,=1 {je 1 zápas odehraný} other {jsou # zápasy odehrané}}."
+    "pastMatches": "Již {count, plural,=1 {je 1 zápas odehraný} other {jsou # zápasy odehrané}}.",
+    "seo": {
+      "title": "Haunspalkáč - {teamName}",
+      "description": "Zápasy týmu `{teamName}` přehledně a s exportem do kalendáře"
+    }
   }
 }

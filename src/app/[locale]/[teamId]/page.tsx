@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import styles from './styles.module.scss'
 import { partition } from "lodash";
 import { getTranslator } from "next-intl/server";
+import { Metadata } from "next";
 
 const dateLocales = {
   cs,
@@ -68,6 +69,20 @@ type TeamDetailProps = {
     locale: 'cs' | 'en';
   };
 };
+
+export async function generateMetadata({
+  params: { locale, teamId }
+}: TeamDetailProps): Promise<Metadata> {
+  const t = await getTranslator(locale, 'team.seo');
+  const { team } = await getTeamDetail(teamId);
+
+  const teamName = team.label
+
+  return {
+    title: t('title', { teamName }),
+    description: t('description', { teamName }),
+  };
+}
 
 export default async function TeamDetail({ params: { locale, teamId } }: TeamDetailProps) {
   const t = await getTranslator(locale, 'team');
