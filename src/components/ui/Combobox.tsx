@@ -17,6 +17,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/Popover";
+import { useTranslations } from "next-intl";
 
 const normalizeValue = (value: string) => value.toLowerCase().trim();
 
@@ -25,9 +26,12 @@ interface ComboboxProps {
     onChange: (value: string) => void;
     options: { value: string; label: string }[];
     placeholder?: string;
+    emptyText?: string;
 }
 
-export function Combobox({ value, onChange, options, placeholder }: ComboboxProps) {
+export function Combobox({ value, onChange, options, placeholder, emptyText }: ComboboxProps) {
+    const t = useTranslations('combobox');
+
     const [open, setOpen] = React.useState(false);
     const optionsMapByLabel = React.useMemo(() => {
         const map = new Map<string, string>();
@@ -49,14 +53,14 @@ export function Combobox({ value, onChange, options, placeholder }: ComboboxProp
                     {value
                         ? options.find((option) => option.value === value)?.label
                         : placeholder}
-                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search option..." />
-                    <CommandEmpty>No team found.</CommandEmpty>
-                    <CommandGroup className="max-h-80 overflow-y-auto">
+                    <CommandInput placeholder={t('search')} />
+                    <CommandEmpty>{emptyText ?? t('empty')}</CommandEmpty>
+                    <CommandGroup className="overflow-y-auto max-h-80">
                         {options.map((option) => (
                             <CommandItem
                                 key={option.value}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { TeamDataMap } from "@/lib/scrapper";
 import orderBy from "lodash/orderBy";
+import { useTranslations } from 'next-intl';
 
 type TeamSelectProps = {
   teams: TeamDataMap;
@@ -13,7 +14,8 @@ type TeamSelectProps = {
 
 export default function TeamSelect({ teams }: TeamSelectProps) {
   const [team, setTeam] = useState<string>('')
-  
+
+  const t = useTranslations('teamSelect');
 
   const teamsList = Array.from(teams, ([id, data]) => ({ value: id, label: data.label }))
   const teamsOptions = orderBy(teamsList, ["label"], "asc")
@@ -24,11 +26,12 @@ export default function TeamSelect({ teams }: TeamSelectProps) {
         value={team}
         onChange={setTeam}
         options={teamsOptions}
-        placeholder={"Select team..."}
+        placeholder={t('placeholder')}
+        emptyText={t('empty')}
       />
 
       <Link href={`/${team}`} passHref>
-        <Button variant="outline" disabled={!team}>Confirm team</Button>
+        <Button variant="outline" disabled={!team}>{t('submit')}</Button>
       </Link>
     </>
   );

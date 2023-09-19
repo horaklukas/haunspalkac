@@ -1,0 +1,20 @@
+{
+  "error": {
+    "general": "Něco se pokazilo. Zkuste to znovu později.",
+    "teamNotFound": "Detail týmu nenalezen, zkuste tým <searchLink>vyhledat znovu</searchLink>"
+  },
+  "combobox": {
+    "empty": "Žádná položka nenalezena.",
+    "search": "Hledat..."
+  },
+  "teamSelect": {
+    "placeholder": "Vyber tým...",
+    "submit": "Potvrdit tým",
+    "empty": "Žádný tým nenalezen."
+  },
+  "team": {
+    "loading": "Načítám detail týmu...",
+    "selectOther": "Vybrat jiný tým",
+    "pastMatches": "Již {count, plural,=1 {je 1 zápas odehraný} other {jsou # zápasy odehrané}}."
+  }
+}
