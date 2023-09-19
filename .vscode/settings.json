@@ -3,6 +3,7 @@
     "conventionalCommits.promptFooter": false,
     "conventionalCommits.promptBody": false,
     "conventionalCommits.scopes": [
-        "schedule"
+        "schedule",
+        "ux"
     ]
 }

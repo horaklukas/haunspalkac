@@ -4,7 +4,7 @@ import { isBefore, format } from "date-fns";
 // import clsx from "clsx";
 import { cs } from "date-fns/locale";
 
-import {  TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
+import { TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
 import { getFullPsmfUrl } from "@/lib/scrapper/utils";
 import { AddToCalendarButton } from "@/components/AddToCalendarButton";
 import Link from "next/link";
@@ -68,7 +68,6 @@ export default async function TeamDetail({ params }: TeamDetailProps) {
   const allTeams = await getTeams()
   const nowDate = new Date();
   const [pastMatches, futureMatches] = partition(matches, ({ date }) => isBefore(date, nowDate))
-
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen gap-3 p-5 pt-14 md:p-12">
