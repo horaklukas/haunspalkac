@@ -1,5 +1,6 @@
 {
   "app": {
+    "loading": "Načítám...",
     "seo": {
       "title": "Haunspalkáč",
       "description": "Zápasy Haunspalky přehledně a s exportem do kalendáře"

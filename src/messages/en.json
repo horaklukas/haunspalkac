@@ -1,5 +1,6 @@
 {
   "app": {
+    "loading": "Loading app..",
     "seo": {
       "title": "Haunspalkáč",
       "description": "Haunspalka league matches arranged and with export to calendar"
