@@ -7,6 +7,7 @@ import { psmfPaths } from "./config";
 import psmf from "./api";
 import { getTeamMatches } from "./matches";
 import { getTeamIdFromPath, getText } from "./utils";
+import { logger } from "../logger";
 
 const scrappedDataCache = new NodeCache();
 
@@ -40,6 +41,9 @@ const getCurrentSeason = async () => {
 };
 
 const getLeagues = async () => {
+  logger.info("Going to scrap leagues list");
+  const leaguesScrapProfiler = logger.startTimer();
+
   const currentYearLink = await getCurrentSeason();
 
   if (!currentYearLink) {
@@ -52,9 +56,13 @@ const getLeagues = async () => {
     throw new Error("Couldn't get current season leagues");
   }
 
+  leaguesScrapProfiler.done({ message: "Leagues list scrapped" });
+
+  const leaguesParseProfiler = logger.startTimer();
+
   const $ = cheerio.load(await response.text());
 
-  return $(".component__list-label")
+  const leagues = $(".component__list-label")
     .map((_: number, label: cheerio.Element) => {
       const level = getText(label, $);
 
@@ -69,6 +77,12 @@ const getLeagues = async () => {
     })
     .toArray()
     .flat();
+
+  leaguesParseProfiler.done({
+    message: `${leagues.length} leagues list parsed`,
+  });
+
+  return leagues;
 };
 
 export type TeamDataMap = Map<string, TeamInfo>;
@@ -77,7 +91,10 @@ export const getTeams = async (): Promise<TeamDataMap> => {
   let teams = scrappedDataCache.get<TeamDataMap>("teams");
 
   if (!teams) {
+    logger.info("Teams not found in cache, going to scrap them");
     const leaguesLinks = await getLeagues();
+
+    const teamsScrapProfiler = logger.startTimer();
 
     const response = await Promise.allSettled(
       leaguesLinks.map(async ({ name, path }) => {
@@ -95,7 +112,13 @@ export const getTeams = async (): Promise<TeamDataMap> => {
       })
     );
 
+    teamsScrapProfiler.done({
+      message: "Leagues pages (containing teams) scrapped",
+    });
+
     teams = new Map<string, TeamInfo>();
+
+    const teamsParseProfiler = logger.startTimer();
 
     for (const leaguePagePromise of response) {
       if (leaguePagePromise.status !== "fulfilled") {
@@ -118,6 +141,7 @@ export const getTeams = async (): Promise<TeamDataMap> => {
         });
       });
     }
+    teamsParseProfiler.done({ message: "Teams parsed from leagues pages" });
   }
 
   return teams;

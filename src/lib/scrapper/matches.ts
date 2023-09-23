@@ -8,6 +8,7 @@ import { getPageTableData, getTeamIdFromPath, getText } from "./utils";
 import psmf from "./api";
 import { snakeCase } from "lodash";
 import { MINUTE } from "../constants";
+import { logger } from "../logger";
 
 const scrappedDataCache = new NodeCache();
 
@@ -135,11 +136,21 @@ export const getTeamMatches = async (
   let matchSchedule = scrappedDataCache.get<MatchSchedule>(cacheKey);
 
   if (!matchSchedule) {
+    logger.info(
+      `Team ${teamPagePath} matches not found in cache, going to scrap them`
+    );
+
+    const matchesScrapProfiler = logger.startTimer();
+
     const response = await psmf.get(teamPagePath);
 
     if (!response.ok) {
       throw new Error("Couldn't get team detail page");
     }
+
+    matchesScrapProfiler.done({ message: "Team matches scrapped" });
+
+    const matchesParseProfiler = logger.startTimer();
 
     const $ = cheerio.load(await response.text());
 
@@ -170,8 +181,11 @@ export const getTeamMatches = async (
         };
       }
     );
-
     scrappedDataCache.set(cacheKey, matchSchedule, 24 * 60 * MINUTE);
+
+    matchesParseProfiler.done({
+      message: `Team ${teamPagePath} matches parsed`,
+    });
   }
 
   return matchSchedule;
