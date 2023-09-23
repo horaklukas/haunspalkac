@@ -1,4 +1,3 @@
-import { snakeCase } from "lodash";
 import * as cheerio from "cheerio";
 import NodeCache from "node-cache";
 
@@ -88,7 +87,8 @@ const getLeagues = async () => {
 export type TeamDataMap = Map<string, TeamInfo>;
 
 export const getTeams = async (): Promise<TeamDataMap> => {
-  let teams = scrappedDataCache.get<TeamDataMap>("teams");
+  const cacheKey = "teams";
+  let teams = scrappedDataCache.get<TeamDataMap>(cacheKey);
 
   if (!teams) {
     logger.info("Teams not found in cache, going to scrap them");
@@ -141,6 +141,8 @@ export const getTeams = async (): Promise<TeamDataMap> => {
         });
       });
     }
+    scrappedDataCache.set(cacheKey, teams, 24 * 60 * MINUTE);
+
     teamsParseProfiler.done({ message: "Teams parsed from leagues pages" });
   }
 
