@@ -1,107 +1,91 @@
+import NodeCache from "node-cache";
 import * as cheerio from "cheerio";
 import { getPageTableData, getText } from "./utils";
 import psmf from "./api";
 import { trim } from "lodash";
 import { psmfPaths } from "./config";
+import { logger } from "../logger";
+import { MINUTE } from "../constants";
+
+const scrappedDataCache = new NodeCache();
 
 export interface FieldData {
   abbr: string;
   name: string;
+  link?: string;
   info: string;
-  link: string;
+  address: string;
 }
 
-/* const parseFieldData = (
-  firstColumn: cheerio.Element,
+const parseFieldInfo = (
+  infoColumn: cheerio.Element,
   $: cheerio.CheerioAPI
-): Pick<FieldData, "abbr" | "link">[] => {
-  const firstColumnText = getText(firstColumn, $);
+): Pick<FieldData, "address" | "info"> => {
+  const firstColumnText = getText(infoColumn, $);
 
-  // headers are not in th but td elements, we need to identify them by label :( and then skip them
-  if (firstColumnText === "Zkratka hřiště") {
-    return null;
-  }
+  const [address, ...crumbs] = firstColumnText.split(/\s/g);
 
-  const [fieldId, ...crumbs] = firstColumnText.split(/\s/g);
-
-  const links: string[] = [];
-  $(firstColumn)
-    .find("a")
-    .each((_: number, linkElement: cheerio.Element) => {
-      const link = $(linkElement).attr("href");
-
-      if (/^https?:\/\/mapy\.cz/.test(link)) {
-        links.push(link);
-      }
-    });
-  const firstLink = links[0] ?? null;
-
-  if (crumbs.length === 0) {
-    return [{ abbr: fieldId, link: firstLink }];
-  } else {
-    const fieldNumbers = crumbs
-      .map((crumb: string) => {
-        const maybeNumber = trim(crumb, ", ");
-        return maybeNumber === "" ? NaN : Number(maybeNumber);
-      })
-      .filter((maybeFieldNumber: number) => !isNaN(maybeFieldNumber));
-
-    if (fieldNumbers.length === 0) {
-      return [{ abbr: fieldId, link: firstLink }];
-    } else {
-      return fieldNumbers.map((fieldNumber: number, index: number) => {
-        const link = links[index] ?? firstLink;
-
-        return {
-          abbr: `${fieldId}${fieldNumber}`,
-          link: link,
-        };
-      });
-    }
-  }
+  return {
+    address,
+    info: crumbs.join("\n"),
+  };
 };
 
 export const getFieldsList = async (): Promise<FieldData[]> => {
-  const response = await psmf.get(psmfPaths.fields);
+  const cacheKey = `fields`;
+  let fields = scrappedDataCache.get<FieldData[]>(cacheKey);
 
-  const html = response.data;
-  const $ = cheerio.load(html);
+  if (!fields) {
+    const fieldsScrapProfiler = logger.startTimer();
 
-  const allFields: FieldData[] = [];
+    const response = await psmf.get(psmfPaths.fields);
 
-  getPageTableData($).forEach((columns) => {
-    const fields = parseFieldData(columns[0], $);
-
-    if (!fields) {
-      return;
+    if (!response.ok) {
+      throw new Error("Couldn't get fields page");
     }
 
-    fields.forEach(({ abbr, link }) => {
-      const name = getText(columns[1], $);
-      const info = getText(columns[2], $);
+    fieldsScrapProfiler.done({ message: "Fields scrapped" });
 
-      allFields.push({
-        abbr,
-        name,
-        info,
-        link: link,
-      });
-    });
-  });
+    const fieldsParseProfiler = logger.startTimer();
 
-  return allFields;
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    fields = [] as FieldData[];
+
+    fields = getPageTableData($("table.cms-editor-table"), $).flatMap(
+      (columns) => {
+        const name = getText(columns[0], $);
+        const { address, info } = parseFieldInfo(columns[2], $);
+
+        return $(columns[1])
+          .find("a")
+          .map((_: number, linkElement: cheerio.Element) => {
+            const link = $(linkElement).attr("href");
+            const abbr = getText(linkElement, $);
+
+            return { abbr, name, info, address, link };
+          })
+          .toArray();
+      }
+    );
+
+    scrappedDataCache.set(cacheKey, fields, 24 * 60 * MINUTE);
+
+    fieldsParseProfiler.done({ message: `Fields parsed` });
+  }
+
+  return fields;
 };
-
-export type FieldsById = Record<string, FieldData>;
 
 export const getFieldsById = async () => {
   const fields = await getFieldsList();
 
-  const fieldsByAbbr: FieldsById = fields.reduce((byAbbr, field) => {
-    byAbbr[field.abbr] = field;
-    return byAbbr;
-  }, {});
+  const fieldsMap = new Map<FieldData["abbr"], FieldData>();
 
-  return fieldsByAbbr;
+  fields.forEach((field) => {
+    fieldsMap.set(field.abbr, field);
+  });
+
+  return fieldsMap;
 };
- */

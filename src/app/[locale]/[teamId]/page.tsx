@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { isBefore, format } from "date-fns";
 import { cs, enUS } from "date-fns/locale";
 
-import { TeamInfo, getTeamData, getTeams } from "@/lib/scrapper";
+import { TeamInfo, getFieldsById, getTeamData, getTeams } from "@/lib/scrapper";
 import { getFullPsmfUrl } from "@/lib/scrapper/utils";
 import { AddToCalendarButton } from "@/components/AddToCalendarButton";
 import Link from "next/link";
@@ -57,7 +57,7 @@ const TeamName = ({ team }: { team?: TeamInfo }) => {
   const { urlPath, label } = team
 
   return (
-    <a className="text-xl" href={getTeamUrl(urlPath)} target="_blank" rel="noopener noreferrer">
+    <a className="text-xl hover:text-yellow-600" href={getTeamUrl(urlPath)} target="_blank" rel="noopener noreferrer">
       {label}
     </a >
   )
@@ -89,6 +89,8 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
 
   const { team, matches } = await getTeamDetail(teamId);
   const allTeams = await getTeams()
+  const fields = await getFieldsById()
+
   const nowDate = new Date();
   const [pastMatches, futureMatches] = partition(matches, ({ date }) => isBefore(date, nowDate))
 
@@ -102,7 +104,7 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
 
       <header className="flex mb-5 border-b border-white">
         <h1 className="text-2xl">
-          <a href={getTeamUrl(team.urlPath)} target="_blank">{team.label}</a>
+          <a href={getTeamUrl(team.urlPath)} target="_blank" className="hover:text-yellow-600">{team.label}</a>
         </h1>
       </header>
 
@@ -116,6 +118,7 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
         {futureMatches.map(({ date, teams, round, field }) => {
           const homeTeam = allTeams.get(teams.home.id ?? '')
           const awayTeam = allTeams.get(teams.away.id ?? '')
+          const fieldInfo = fields.get(field)
 
           return (
             <Fragment key={date.toString()} >
@@ -145,7 +148,9 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
                 </span>
               </div>
 
-              <span className={`text-sm text-slate-400 ml-1 md:justify-self-end md:ml-4 ${styles.field}`}>{field}</span>
+              <a href={fieldInfo?.link ?? ''} target="_blank" className={`text-sm text-slate-400 hover:text-yellow-600 ml-1 md:justify-self-end md:ml-4 ${styles.field}`}>
+                {fieldInfo?.name}
+              </a>
 
               {homeTeam && awayTeam && (
                 <AddToCalendarButton
