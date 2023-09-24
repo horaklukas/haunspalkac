@@ -2,7 +2,7 @@ export const PSMF_URL = "http://www.psmf.cz";
 
 export const psmfPaths = {
   seasons: 'souteze/',
-  fields: "vyveska/seznam-hrist/",
+  fields: "hriste/",
   search: "vyhledavani",
   teamsScript: "res/js/search.js",
 } as const;

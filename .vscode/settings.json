@@ -4,6 +4,7 @@
     "conventionalCommits.promptBody": false,
     "conventionalCommits.scopes": [
         "schedule",
-        "ux"
+        "ux",
+        "calendar"
     ]
 }

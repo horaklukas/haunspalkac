@@ -1,31 +1,40 @@
 "use client";
 
-import { TeamInfo } from "@/lib/scrapper";
+import { FieldData, TeamInfo } from "@/lib/scrapper";
 import { AddToCalendarButton as AddToCalendarButtonReact } from "add-to-calendar-button-react";
 import { addMinutes, format } from "date-fns";
 
 type AddToCalendarButtonProps = {
   round: number;
   date: Date;
-  location: string;
   homeTeam: TeamInfo;
   awayTeam: TeamInfo;
+  field?: FieldData
 };
 
 export const AddToCalendarButton = ({
   round,
   date,
-  location,
   homeTeam,
   awayTeam,
+  field,
 }: AddToCalendarButtonProps) => {
+  const location = field?.address ?? ''
+  const description = [
+    `Round ${round}.`,
+    field?.info,
+    field ? `\n[url]${field?.link}|${field?.link}[/url]` : null
+  ].filter(Boolean).join('\n')
+
   return (
     <AddToCalendarButtonReact
-      name={`${round}. ${homeTeam?.label} vs ${awayTeam?.label}`}
+      name={`⚽️ ${homeTeam?.label} vs. ${awayTeam?.label}`}
       startDate={format(date, "yyyy-MM-dd")}
       startTime={format(date, "HH:mm")}
       endTime={format(addMinutes(date, 75), "HH:mm")}
+      timeZone="Europe/Prague"
       location={location}
+      description={description}
       options={["Apple", "Google", "Outlook.com", "Microsoft365"]}
       hideTextLabelButton
       lightMode="dark"

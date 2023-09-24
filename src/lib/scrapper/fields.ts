@@ -21,9 +21,8 @@ const parseFieldInfo = (
   infoColumn: cheerio.Element,
   $: cheerio.CheerioAPI
 ): Pick<FieldData, "address" | "info"> => {
-  const firstColumnText = getText(infoColumn, $);
-
-  const [address, ...crumbs] = firstColumnText.split(/\s/g);
+  const firstColumnText = $(infoColumn).html() ?? "";
+  const [address, ...crumbs] = firstColumnText.split("<br>");
 
   return {
     address,
@@ -74,7 +73,7 @@ export const getFieldsList = async (): Promise<FieldData[]> => {
 
     fieldsParseProfiler.done({ message: `Fields parsed` });
   }
-
+  // console.log(fields)
   return fields;
 };
 

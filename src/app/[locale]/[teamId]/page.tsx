@@ -158,7 +158,7 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
                   awayTeam={awayTeam}
                   round={round}
                   date={date}
-                  location={field}
+                  field={fieldInfo}
                 />
               )}
 
