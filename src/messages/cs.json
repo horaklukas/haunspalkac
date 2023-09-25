@@ -23,6 +23,7 @@
     "loading": "Načítám detail týmu...",
     "selectOther": "Vybrat jiný tým",
     "pastMatches": "Již {count, plural,=1 {je 1 zápas odehraný} other {jsou # zápasy odehrané}}.",
+    "round": "{round}. kolo",
     "seo": {
       "title": "Haunspalkáč - {teamName}",
       "description": "Zápasy týmu `{teamName}` přehledně a s exportem do kalendáře"

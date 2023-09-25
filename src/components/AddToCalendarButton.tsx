@@ -3,6 +3,7 @@
 import { FieldData, TeamInfo } from "@/lib/scrapper";
 import { AddToCalendarButton as AddToCalendarButtonReact } from "add-to-calendar-button-react";
 import { addMinutes, format } from "date-fns";
+import { useTranslations } from "next-intl";
 
 type AddToCalendarButtonProps = {
   round: number;
@@ -19,9 +20,11 @@ export const AddToCalendarButton = ({
   awayTeam,
   field,
 }: AddToCalendarButtonProps) => {
+  const t = useTranslations('team')
+
   const location = field?.address ?? ''
   const description = [
-    `Round ${round}.`,
+    t('round', { round }),
     field?.info,
     field ? `\n[url]${field?.link}|${field?.link}[/url]` : null
   ].filter(Boolean).join('\n')

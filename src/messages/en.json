@@ -23,6 +23,7 @@
     "loading": "Loading team detail",
     "selectOther": "Select other team",
     "pastMatches": "There {count, plural,=1 {is 1 past match} other {are # past matches}}.",
+    "round": "Round {round}",
     "seo": {
       "title": "Haunspalkáč - {teamName}",
       "description": "Matches of team `{teamName}` arranged and with export to calendar"
