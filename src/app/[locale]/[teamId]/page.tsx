@@ -127,7 +127,10 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
               <span className="inline-flex flex-col justify-between pb-1 ml-1 overflow-hidden text-center text-black rounded shrink-0 grow-0 w-14 h-14 bg-slate-300">
                 <span className="inline-block w-full h-2 bg-red-700"></span>
                 <strong className="text-lg">{date.getDate()}</strong>
-                <small className="text-xs text-red-700 uppercase">{format(date, 'LLL yy', { locale: dateLocales[locale] ?? cs })}</small>
+                <small className="text-xs text-red-700">
+                  <span className="uppercase">{format(date, 'LLL', { locale: dateLocales[locale] ?? cs })}</span> 
+                  <span className="capitalize">, {format(date, 'EEEEEE', { locale: dateLocales[locale] ?? cs })}</span>
+                </small>
               </span>
 
               <div className={`flex flex-col gap-y-1 md:grid ${styles.teams}`}>
