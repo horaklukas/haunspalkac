@@ -81,6 +81,10 @@ export async function generateMetadata({
   return {
     title: t('title', { teamName }),
     description: t('description', { teamName }),
+    openGraph: {
+      title: t('title', { teamName }),
+      description: t('description', { teamName }),
+    },
   };
 }
 
