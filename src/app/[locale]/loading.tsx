@@ -5,7 +5,7 @@ export default function HomeLoading() {
   const t = useTranslations('app')
 
   return (
-    <main className="flex items-center justify-center min-h-screen p-24">
+    <main className="flex flex-col items-center justify-center min-h-screen gap-5 p-24">
       <Loader />
       <small className="text-sm">{t('loading')}</small>
 
