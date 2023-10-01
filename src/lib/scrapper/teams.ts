@@ -7,6 +7,7 @@ import psmf from "./api";
 import { getTeamMatches } from "./matches";
 import { getTeamIdFromPath, getText } from "./utils";
 import { logger } from "../logger";
+import { teamsData } from "../teams";
 
 const scrappedDataCache = new NodeCache();
 
@@ -90,60 +91,66 @@ export const getTeams = async (): Promise<TeamDataMap> => {
   const cacheKey = "teams";
   let teams = scrappedDataCache.get<TeamDataMap>(cacheKey);
 
+  // TODO - improve performance
+  // if (!teams) {
+  //   logger.info("Teams not found in cache, going to scrap them");
+  //   const leaguesLinks = await getLeagues();
+
+  //   const teamsScrapProfiler = logger.startTimer();
+
+  //   const response = await Promise.allSettled(
+  //     leaguesLinks.map(async ({ name, path }) => {
+  //       if (!path) {
+  //         throw new Error(`Couldn't get league ${name} path`);
+  //       }
+
+  //       const response = await psmf.get(path);
+
+  //       if (!response.ok) {
+  //         throw new Error("Failed to get league teams");
+  //       }
+
+  //       return await response.text();
+  //     })
+  //   );
+
+  //   teamsScrapProfiler.done({
+  //     message: "Leagues pages (containing teams) scrapped",
+  //   });
+
+  //   teams = new Map<string, TeamInfo>();
+
+  //   const teamsParseProfiler = logger.startTimer();
+
+  //   for (const leaguePagePromise of response) {
+  //     if (leaguePagePromise.status !== "fulfilled") {
+  //       continue;
+  //     }
+
+  //     const $ = cheerio.load(leaguePagePromise.value);
+  //     const $teams = $('.component__title:contains("Tabulky")')
+  //       .next(".ci-tables")
+  //       .find("td a");
+
+  //     $teams.each((index: number, link: cheerio.Element) => {
+  //       const href = $(link).attr("href");
+  //       const id = getTeamIdFromPath(href) ?? `${index}`;
+
+  //       teams!.set(id, {
+  //         id,
+  //         urlPath: href,
+  //         label: getText(link, $),
+  //       });
+  //     });
+  //   }
+  //   scrappedDataCache.set(cacheKey, teams, 24 * 60 * MINUTE);
+    
+  //   teamsParseProfiler.done({ message: "Teams parsed from leagues pages" });
+  // }
   if (!teams) {
-    logger.info("Teams not found in cache, going to scrap them");
-    const leaguesLinks = await getLeagues();
-
-    const teamsScrapProfiler = logger.startTimer();
-
-    const response = await Promise.allSettled(
-      leaguesLinks.map(async ({ name, path }) => {
-        if (!path) {
-          throw new Error(`Couldn't get league ${name} path`);
-        }
-
-        const response = await psmf.get(path);
-
-        if (!response.ok) {
-          throw new Error("Failed to get league teams");
-        }
-
-        return await response.text();
-      })
-    );
-
-    teamsScrapProfiler.done({
-      message: "Leagues pages (containing teams) scrapped",
-    });
-
-    teams = new Map<string, TeamInfo>();
-
-    const teamsParseProfiler = logger.startTimer();
-
-    for (const leaguePagePromise of response) {
-      if (leaguePagePromise.status !== "fulfilled") {
-        continue;
-      }
-
-      const $ = cheerio.load(leaguePagePromise.value);
-      const $teams = $('.component__title:contains("Tabulky")')
-        .next(".ci-tables")
-        .find("td a");
-
-      $teams.each((index: number, link: cheerio.Element) => {
-        const href = $(link).attr("href");
-        const id = getTeamIdFromPath(href) ?? `${index}`;
-
-        teams!.set(id, {
-          id,
-          urlPath: href,
-          label: getText(link, $),
-        });
-      });
-    }
     scrappedDataCache.set(cacheKey, teams, 24 * 60 * MINUTE);
 
-    teamsParseProfiler.done({ message: "Teams parsed from leagues pages" });
+    teams = new Map<string, TeamInfo>(teamsData);
   }
 
   return teams;
