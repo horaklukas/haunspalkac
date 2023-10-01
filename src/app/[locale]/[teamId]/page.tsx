@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { notFound } from "next/navigation";
-import { isBefore, format } from "date-fns";
+import { isBefore } from "date-fns";
+import { format } from "date-fns-tz";
 import { cs, enUS } from "date-fns/locale";
 
 import { TeamInfo, getFieldsById, getTeamData, getTeams } from "@/lib/scrapper";
@@ -98,7 +99,10 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
   const nowDate = new Date();
   const [pastMatches, futureMatches] = partition(matches, ({ date }) => isBefore(date, nowDate))
 
-  const localeData = dateLocales[locale] ?? cs
+  const formatDateOptions = {
+    timeZone: 'Europe/Prague',
+    locale: dateLocales[locale] ?? cs
+  }
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen gap-3 p-5 pt-14 md:p-12">
@@ -134,8 +138,8 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
                 <span className="inline-block w-full h-2 bg-red-700"></span>
                 <strong className="text-lg">{date.getDate()}</strong>
                 <small className="text-xs text-red-700">
-                  <span className="uppercase">{format(date, 'LLL', { locale: localeData })}</span>
-                  <span className="capitalize">, {format(date, 'EEEEEE', { locale: localeData })}</span>
+                  <span className="uppercase">{format(date, 'LLL', formatDateOptions)}</span>
+                  <span className="capitalize">, {format(date, 'EEEEEE', formatDateOptions)}</span>
                 </small>
               </span>
 
@@ -147,7 +151,7 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
                   <TeamName team={homeTeam} />
                 </span>
                 <span className="text-sm text-slate-400">
-                  {format(date, 'HH:mm', { locale: localeData })}
+                  {format(date, 'HH:mm', formatDateOptions)}
                 </span>
                 <span className="inline-flex items-center gap-3 md:ml-3">
                   {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
