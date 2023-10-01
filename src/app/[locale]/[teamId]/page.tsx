@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { isBefore } from "date-fns";
-import { format } from "date-fns-tz";
+import { OptionsWithTZ, format } from "date-fns-tz";
 import { cs, enUS } from "date-fns/locale";
 
 import { TeamInfo, getFieldsById, getTeamData, getTeams } from "@/lib/scrapper";
@@ -14,6 +14,7 @@ import styles from './styles.module.scss'
 import { partition } from "lodash";
 import { getTranslator } from "next-intl/server";
 import { Metadata } from "next";
+import { MatchTime } from "@/components/match/MatchTime";
 
 const dateLocales = {
   cs,
@@ -99,9 +100,8 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
   const nowDate = new Date();
   const [pastMatches, futureMatches] = partition(matches, ({ date }) => isBefore(date, nowDate))
 
-  const formatDateOptions = {
+  const formatDateOptions: OptionsWithTZ = {
     timeZone: 'Europe/Prague',
-    locale: dateLocales[locale] ?? cs
   }
 
   return (
@@ -150,9 +150,7 @@ export default async function TeamDetail({ params: { locale, teamId } }: TeamDet
                   )}
                   <TeamName team={homeTeam} />
                 </span>
-                <span className="text-sm text-slate-400">
-                  {format(date, 'HH:mm', formatDateOptions)}
-                </span>
+                <MatchTime date={date} />
                 <span className="inline-flex items-center gap-3 md:ml-3">
                   {teams.away.shirtColors && teams.away.shirtColors.length > 0 && (
                     <ShirtColors colors={teams.away.shirtColors} />
