@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { isBefore } from "date-fns";
-import { OptionsWithTZ, format, formatInTimeZone } from "date-fns-tz";
+import { OptionsWithTZ, format } from "date-fns-tz";
 import { cs, enUS } from "date-fns/locale";
 
 import {
@@ -19,7 +19,7 @@ import { partition } from "lodash";
 import { getTranslator } from "next-intl/server";
 import { Metadata } from "next";
 import { MatchTime } from "@/components/match/MatchTime";
-import { getTeamUrl } from "@/utils";
+import { formatMatchTime, getTeamUrl } from "@/utils";
 import { ShirtColors } from "@/components/match/ShirtColors";
 import { TeamName } from "@/components/match/TeamName";
 
@@ -66,7 +66,7 @@ export async function generateMetadata({
   if (nextMatch) {
     const homeTeam = allTeams.get(nextMatch.teams.home.id ?? "");
     const awayTeam = allTeams.get(nextMatch.teams.away.id ?? "");
-    const matchDate = formatInTimeZone(nextMatch.date, "Europe/Prague", "d.MMM, EEEEEE, HH:mm", { locale: dateLocales[locale] })
+    const matchDate = formatMatchTime(nextMatch.date, "d.MMM, EEEEEE, HH:mm", locale)
     const fieldInfo = fields.get(nextMatch.field);
 
     if (homeTeam && awayTeam) {
