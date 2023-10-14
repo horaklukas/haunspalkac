@@ -30,7 +30,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.269.0",
     "next": "^13.5.4",
-    "next-intl": "3.0.0-beta.18",
+    "next-intl": "^3.0.0-rc.4",
     "node-cache": "^5.1.2",
     "postcss": "8.4.28",
     "react": "18.2.0",
