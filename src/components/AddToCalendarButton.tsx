@@ -25,10 +25,10 @@ export const AddToCalendarButton = ({
 
   const location = field?.address ?? ''
   const description = [
-    t('round', { round }),
-    field?.info,
-    field ? `\n[url]${field?.link}|${field?.link}[/url]` : null
-  ].filter(Boolean).join('\n')
+    `[p]${t('round', { round })}[/p][br]`,
+    field?.info ? `[p]${field.info.replace(/\n/g, '[br]')}[/p][br]` : null,
+    field ? `[url]${field?.link}|${field?.link}[/url]` : null
+  ].filter(Boolean).join('')
 
   return (
     <AddToCalendarButtonReact
@@ -36,7 +36,6 @@ export const AddToCalendarButton = ({
       startDate={format(date, "yyyy-MM-dd")}
       startTime={formatMatchTime(date)}
       endTime={formatMatchTime(addMinutes(date, 75))}
-      
       timeZone="Europe/Prague"
       location={location}
       description={description}
