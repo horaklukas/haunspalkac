@@ -5,6 +5,7 @@
     "conventionalCommits.scopes": [
         "schedule",
         "ux",
-        "calendar"
+        "calendar",
+        "deps"
     ]
 }
