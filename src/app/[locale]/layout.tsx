@@ -20,10 +20,16 @@ export async function generateMetadata({
 }: Omit<RootLayoutProps, 'children'>): Promise<Metadata> {
   const t = await getTranslator(locale, 'app.seo');
 
-  return {
+  const basicInfo = {  
     title: t('title'),
     description: t('description'),
   };
+
+  return {
+    metadataBase: new URL('https://haunspalkac.vercel.app'),
+    ...basicInfo,
+    openGraph: basicInfo,
+  }
 }
 
 function GeneralError() {
