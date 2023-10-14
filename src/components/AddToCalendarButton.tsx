@@ -1,6 +1,7 @@
 "use client";
 
 import { FieldData, TeamInfo } from "@/lib/scrapper";
+import { formatMatchTime } from "@/utils";
 import { AddToCalendarButton as AddToCalendarButtonReact } from "add-to-calendar-button-react";
 import { addMinutes, format } from "date-fns";
 import { useTranslations } from "next-intl";
@@ -33,12 +34,13 @@ export const AddToCalendarButton = ({
     <AddToCalendarButtonReact
       name={`⚽️ ${homeTeam?.label} vs. ${awayTeam?.label}`}
       startDate={format(date, "yyyy-MM-dd")}
-      startTime={format(date, "HH:mm")}
-      endTime={format(addMinutes(date, 75), "HH:mm")}
-      timeZone="CET"
+      startTime={formatMatchTime(date)}
+      endTime={formatMatchTime(addMinutes(date, 75))}
+      
+      timeZone="Europe/Prague"
       location={location}
       description={description}
-      options={["Apple", "Google", "Outlook.com", "Microsoft365"]}
+      options={["Apple", "Google", "Outlook.com", "Microsoft365", "iCal"]}
       hideTextLabelButton
       lightMode="dark"
       size="4|3|2"

@@ -1,4 +1,4 @@
-import { formatInTimeZone } from "date-fns-tz";
+import { formatMatchTime } from "@/utils";
 
 interface MatchTimeProps {
   date: Date;
@@ -7,7 +7,7 @@ interface MatchTimeProps {
 export const MatchTime = ({ date }: MatchTimeProps) => {
   return (
     <span className="text-sm text-slate-400">
-      {formatInTimeZone(date, "Europe/Prague", "HH:mm")}
+      {formatMatchTime(date)}
     </span>
   );
 };
