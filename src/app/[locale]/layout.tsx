@@ -57,6 +57,9 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`${inter.className} dark`}>
+        <span className="absolute right-0 px-8 origin-top-left rotate-45 translate-x-12 -translate-y-4 bg-yellow-700 d-block text-md">
+          Alpha
+        </span>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ErrorBoundary fallback={<GeneralError />}>
             <TooltipProvider>
