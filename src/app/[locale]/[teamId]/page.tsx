@@ -23,6 +23,7 @@ import { formatMatchTime, getTeamUrl } from "@/utils";
 import { ShirtColors } from "@/components/match/ShirtColors";
 import { TeamName } from "@/components/match/TeamName";
 import { Separator } from "@/components/ui/separator";
+import { MatchField } from "@/components/match/MatchField";
 
 const dateLocales = {
   cs,
@@ -183,13 +184,9 @@ export default async function TeamDetail({
                 </span>
               </div>
 
-              <a
-                href={fieldInfo?.link ?? ""}
-                target="_blank"
-                className={`text-sm text-slate-400 hover:text-yellow-600 ml-1 md:justify-self-end md:ml-4 ${styles.field}`}
-              >
-                {fieldInfo?.name}
-              </a>
+              <div className="col-span-3 col-start-1 md:col-auto md:justify-self-end ">
+                {fieldInfo && <MatchField field={fieldInfo} />}
+              </div>
 
               {homeTeam && awayTeam && (
                 <AddToCalendarButton

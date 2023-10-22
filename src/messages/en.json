@@ -28,5 +28,8 @@
       "title": "Haunspalkáč - {teamName}",
       "description": "Matches of team `{teamName}` arranged and with export to calendar"
     }
+  },
+  "field": {
+    "openMap": "Open map"
   }
 }

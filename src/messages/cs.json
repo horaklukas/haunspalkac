@@ -28,5 +28,8 @@
       "title": "Haunspalkáč - {teamName}",
       "description": "Zápasy týmu `{teamName}` přehledně a s exportem do kalendáře"
     }
+  },
+  "field": {
+    "openMap": "Otevřít mapu"
   }
 }

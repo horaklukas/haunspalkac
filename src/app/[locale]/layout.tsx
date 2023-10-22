@@ -6,6 +6,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import '@/styles/global.css'
 import { notFound } from 'next/navigation';
 import { getTranslator } from 'next-intl/server';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,7 +21,7 @@ export async function generateMetadata({
 }: Omit<RootLayoutProps, 'children'>): Promise<Metadata> {
   const t = await getTranslator(locale, 'app.seo');
 
-  const basicInfo = {  
+  const basicInfo = {
     title: t('title'),
     description: t('description'),
   };
@@ -58,7 +59,9 @@ export default async function RootLayout({
       <body className={`${inter.className} dark`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ErrorBoundary fallback={<GeneralError />}>
-            {children}
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
           </ErrorBoundary>
         </NextIntlClientProvider>
       </body>
