@@ -22,6 +22,7 @@ import { MatchTime } from "@/components/match/MatchTime";
 import { formatMatchTime, getTeamUrl } from "@/utils";
 import { ShirtColors } from "@/components/match/ShirtColors";
 import { TeamName } from "@/components/match/TeamName";
+import { Separator } from "@/components/ui/separator";
 
 const dateLocales = {
   cs,
@@ -200,9 +201,7 @@ export default async function TeamDetail({
                 />
               )}
 
-              <hr
-                className={`col-span-full border-t border-slate-400 mt-1 mb-5 md:hidden ${styles.separator}`}
-              />
+              <Separator className="mt-1 mb-5 col-span-full md:hidden" />
             </Fragment>
           );
         })}
